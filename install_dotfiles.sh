@@ -12,7 +12,7 @@ olddir=~/dotfiles_old             # old dotfiles backup directory
 files="bashrc bash_functions bash_profile" 
 files="$files vimrc vim"  
 files="$files gitconfig gitignore gitmessage.txt"
-files="$files tmux.conf"
+files="$files tmux.conf tmux"
 
 ##########
 
