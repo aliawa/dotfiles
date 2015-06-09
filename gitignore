@@ -43,7 +43,6 @@ Thumbs.db
 # IDE
 *.kdev*
 *~
-*.txt
 *.pcap
 
 # Anything that starts with a dot
