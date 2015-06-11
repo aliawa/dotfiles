@@ -9,7 +9,7 @@
 
 dir=~/dotfiles                    # dotfiles directory
 olddir=~/dotfiles_old             # old dotfiles backup directory
-files="bashrc bash_functions bash_profile" 
+files="bashrc bash_functions bash_profile bash_prompt"
 files="$files vimrc vim"  
 files="$files gitconfig gitignore gitmessage.txt"
 files="$files tmux.conf tmux"
