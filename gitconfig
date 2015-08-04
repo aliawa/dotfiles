@@ -6,7 +6,6 @@
 [core]
 	excludesfile = /home/aawais/.gitignore
 [commit]
-	template = /home/aawais/.gitmessage.txt
 [push]
 	default = simple
 [branch]

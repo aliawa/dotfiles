@@ -180,6 +180,7 @@ colorscheme solarized
 autocmd BufLeave,FocusLost * silent! wall
 
 au BufRead,BufNewFile *.mlog        set filetype=mandlog
+au BufNewFile,BufFilePre,BufRead *.md set filetype=markdown
 
 " -------- Key Mappings -------- "
 
