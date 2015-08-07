@@ -32,7 +32,9 @@ let mapleader=","
 
 
 " line numbers hybrid mode
-set relativenumber
+if exists('+relativenumber')
+    set relativenumber
+endif
 set number
 
 " mouse should not select line numbers
