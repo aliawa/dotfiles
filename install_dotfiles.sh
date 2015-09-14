@@ -1,35 +1,54 @@
 #!/bin/bash
-############################
-# .make.sh
-# This script creates symlinks from the home directory to any desired dotfiles 
-# in ~/dotfiles
-############################
 
-########## Variables
+#
+# This script creates symlinks from the home directory to any 
+# desired dotfiles in ~/dotfiles
+#
 
-dir=~/dotfiles                    # dotfiles directory
-olddir=~/dotfiles_old             # old dotfiles backup directory
-files="bashrc bash_functions bash_profile bash_prompt"
+# --------------------------------------------------------------
+# Configuration
+# --------------------------------------------------------------
+DOT_DIR=~/dotfiles           
+OLD_DOT_DIR=~/dotfiles_old       # old dotfiles backup directory
+
+
+# --------------------------------------------------------------
+# Dot Files to symlink
+# --------------------------------------------------------------
+#files="bashrc bash_functions bash_profile bash_prompt"
 files="$files vimrc vim"  
-files="$files gitconfig gitignore gitmessage.txt"
-files="$files tmux.conf tmux"
+#files="$files gitconfig gitignore gitmessage.txt"
+#files="$files tmux.conf tmux"
 
-##########
 
-# create dotfiles_old in homedir
-echo "Creating $olddir for backup of any existing dotfiles in ~"
-mkdir -p $olddir
-echo "...done"
+# --------------------------------------------------------------
+# Main
+# --------------------------------------------------------------
+echo
 
-# change to the dotfiles directory
-echo "Changing to the $dir directory"
-cd $dir
-echo "...done"
+# Create Backup directory
+if [ -d $OLD_DOT_DIR ]; then
+    echo -e "Using \033[1m$OLD_DOT_DIR\033[0m for backup of existing dotfiles"
+else
+    echo -e "Creating \033[1m$OLD_DOT_DIR\033[0m for backup of existing dotfiles"
+    mkdir -p $OLD_DOT_DIR
+fi
 
-# move any existing dotfiles in homedir to dotfiles_old directory, then create symlinks 
+# Create symlinks
 for file in $files; do
-    echo "Moving any existing dotfiles from ~ to $olddir"
-    mv ~/.$file ~/dotfiles_old/
-    echo "Creating symlink to $file in home directory."
-    ln -s $dir/$file ~/.$file
+    if [ -h ~/.$file ]; then
+        if [[ "$(dirname $(readlink ~/.$file))" == "$DOT_DIR" ]]; then
+            echo -e "\033[1m.$file\033[0m -- Already symlinked. Skipping"
+            continue
+        else 
+            rm ~/.$file
+        fi
+
+    fi
+    [[ -f ~/.$file || -d ~/.$file ]] && mv ~/.$file $OLD_DOT_DIR
+    echo -e "\033[1m.$file\033[0m -- Symlinked"
+    ln -s $DOT_DIR/$file ~/.$file
 done
+
+echo 
+
