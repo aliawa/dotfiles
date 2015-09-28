@@ -5,7 +5,6 @@
 
 # get local settings
 [ -e ~/.bash_local ] && source ~/.bash_local
-[ -e ~/.bash_functions ] && source ~/.bash_functions
 
 # set vim as default editor
 export EDITOR=vim
@@ -26,8 +25,13 @@ case "$OSTYPE" in
             alias ls='ls --color=auto'
             alias ll='ls -l --color=auto'
             alias ldir='ls --color=auto -dl */'
+            alias l.='ls -lad .[^.]*'
             alias latest='ls -l -F -t | head'
-            alias vi='vimx'
+            if [[ -e /usr/bin/vimx ]]; then 
+                alias vi='vimx'
+            else 
+                alias vi='vim'
+            fi
             alias minicom='sudo minicom -m -c on'
             alias grep='grep --color=auto'
             ;;

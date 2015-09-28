@@ -1,11 +1,10 @@
 # .bash_profile
+# This file is run at login only
+
 
 # Get the aliases and functions
 if [ -f ~/.bashrc ]; then
 	. ~/.bashrc
 fi
 
-# User specific environment and startup programs
 
-PATH=$PATH:$HOME/bin:.
-export PATH
