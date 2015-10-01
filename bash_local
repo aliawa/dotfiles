@@ -5,7 +5,7 @@
 
 # Source global definitions
 [ -f /etc/bashrc ] && . /etc/bashrc
-[ -f /usr/local/env/bashrc ] && . /usr/Local/env/bashrc
+[ -f /usr/local/env/bashrc ] && . /usr/local/env/bashrc
 
 # Perforce
 export P4DIFF=vimdiff
