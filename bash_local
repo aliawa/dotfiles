@@ -1,0 +1,17 @@
+# ------ PAN DEV SERVR ONLY ------
+
+# May be not needed
+# pathbase=/usr/kerberos/bin:/usr/local/bin:/bin:/usr/bin:/sbin
+
+# Source global definitions
+[ -f /etc/bashrc ] && . /etc/bashrc
+[ -f /usr/local/env/bashrc ] && . /usr/Local/env/bashrc
+
+# Perforce
+export P4DIFF=vimdiff
+export P4EDITOR=vim
+
+# ------ PRIVATE ------
+# Local Path
+export PATH=$PATH:$HOME/bin:.
+
