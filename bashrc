@@ -6,6 +6,9 @@
 # get local settings
 [ -f ~/.bash_local ] && source ~/.bash_local
 
+# bash_sensible from https://github.com/mrzool/bash-sensible.git
+[ -f ~/bash-sensible/sensible.bash ] && source ~/bash-sensible/sensible.bash
+
 # Local path
 export PATH=$PATH:~/bin
 
@@ -47,13 +50,6 @@ esac
 # make ls sort files with dot files first
 export LC_COLLATE=C
 
-# HISTORY OPTIMIZATION
-# save multiline commands as multiline (to disable:shopt -u cmdhist)
-#shopt -s cmdhist
-export HISTCONTROL=ignoredups:erasedups  # no duplicate entries
-export HISTSIZE=100000                   # big big history
-export HISTFILESIZE=100000               # big big history
-shopt -s histappend                      # append to history, don't overwrite it
 
 
 
@@ -66,9 +62,6 @@ export LESS_TERMCAP_ue=$'\E[0m'           # end underline
 export LESS_TERMCAP_us=$'\E[04;38;5;146m' # begin underline
 export LESS_TERMCAP_so=$'\E[01;35;47m'    # standout statusbar/search -> magenta
 
-# check the window size after each command and, if necessary,
-# update the values of LINES and COLUMNS.
-shopt -s checkwinsize
 
 
 # git completion
