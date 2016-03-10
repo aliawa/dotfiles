@@ -5,6 +5,7 @@
 	ui = true
 [core]
 	excludesfile = /home/aawais/.gitignore
+	editor = vim
 [commit]
 [push]
 	default = simple

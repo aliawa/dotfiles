@@ -15,10 +15,10 @@ OLD_DOT_DIR=~/dotfiles_old       # old dotfiles backup directory
 # --------------------------------------------------------------
 # Dot Files to symlink
 # --------------------------------------------------------------
-#files="bashrc bash_functions bash_profile bash_prompt"
+files="bashrc bash_profile bash_prompt"
 files="$files vimrc vim"  
-#files="$files gitconfig gitignore gitmessage.txt"
-#files="$files tmux.conf tmux"
+files="$files gitconfig gitignore gitmessage.txt"
+files="$files tmux.conf tmux"
 
 
 # --------------------------------------------------------------

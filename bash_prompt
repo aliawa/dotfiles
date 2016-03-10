@@ -12,7 +12,7 @@
 # More tips: http://www.cyberciti.biz/tips/howto-linux-unix-bash-shell-setup-prompt.html
 
 
-source ~/bin/git-prompt.sh
+[ -e ~/bin/git-prompt.sh ] && source ~/bin/git-prompt.sh
 
 set_prompts() {
     local black=""

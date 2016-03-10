@@ -19,9 +19,6 @@ set -o vi
 export TERM="xterm-256color"
 
 
-# functions
-[ -e $HOME/.bash_functions ] && . $HOME/.bash_functions
-
 # alias 
 case "$OSTYPE" in
      darwin*)  
@@ -35,8 +32,13 @@ case "$OSTYPE" in
             alias ls='ls --color=auto'
             alias ll='ls -l --color=auto'
             alias ldir='ls --color=auto -dl */'
+            alias l.='ls -lad .[^.]*'
             alias latest='ls -l -F -t | head'
-            alias vi='vimx'
+            if [[ -e /usr/bin/vimx ]]; then 
+                alias vi='vimx'
+            else 
+                alias vi='vim'
+            fi
             alias minicom='sudo minicom -m -c on'
             alias grep='grep --color=auto'
             ;;
@@ -71,10 +73,5 @@ export LESS_TERMCAP_so=$'\E[01;35;47m'    # standout statusbar/search -> magenta
 if [ -f "$HOME/.bash_prompt" ] && [[ $- == *i* ]]; then
     source "$HOME/.bash_prompt"
 fi
-
-
-# work specific
-export P4DIFF=vimdiff
-export P4EDITOR=vim
 
 
