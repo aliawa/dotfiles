@@ -10,6 +10,8 @@ set ruler		    " show the cursor position all the time
 set showcmd		    " display partial commands in the last line
 set incsearch		" do incremental searching
 set nowrap
+set noshowmode      " because it is now provided by the status line
+
 
 " Pathogen plugin manager
 call pathogen#infect() 
@@ -285,11 +287,11 @@ let g:scratch_autohide = 0
 " ----------------------------
 
 let g:lightline = {
-      \ 'colorscheme': 'wombat',
+      \ 'colorscheme': 'solarized',
       \ 'mode_map': { 'c': 'NORMAL' },
       \ 'active': {
       \   'left' : [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ] ],
-      \   'right': [ [ 'lineinfo' ], [ 'percent' ], [ 'filetype' ] ] 
+      \   'right': [ [ 'lineinfo' ], [ 'percent' ] ] 
       \ },
       \ 'component_function': {
       \   'modified': 'MyModified',
@@ -301,8 +303,8 @@ let g:lightline = {
       \   'fileencoding': 'MyFileencoding',
       \   'mode': 'MyMode',
       \ },
-      \ 'separator': { 'left': '⮀', 'right': '⮂' },
-      \ 'subseparator': { 'left': '⮁', 'right': '⮃' }
+      \ 'separator': { 'left': '', 'right': '' },
+      \ 'subseparator': { 'left': '|', 'right': '«' }
       \ }
 
 function! MyModified()
@@ -310,7 +312,7 @@ function! MyModified()
 endfunction
 
 function! MyReadonly()
-  return &ft !~? 'help\|vimfiler\|gundo' && &readonly ? '⭤' : ''
+  return &ft !~? 'help\|vimfiler\|gundo' && &readonly ? 'x' : ''
 endfunction
 
 function! MyFilename()
@@ -325,7 +327,7 @@ endfunction
 function! MyFugitive()
   if &ft !~? 'vimfiler\|gundo' && exists("*fugitive#head")
     let _ = fugitive#head()
-    return strlen(_) ? '⭠ '._ : ''
+    return strlen(_) ? '| '._ : ''
   endif
   return ''
 endfunction
