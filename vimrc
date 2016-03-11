@@ -74,7 +74,7 @@ if has("autocmd")
     "au FileType cpp set makeprg=g++\ %
 
     " 2 tab spaces for xml
-    autocmd FileType python setl sw=2 sts=2 et
+    autocmd FileType xml setl sw=2 sts=2 et
 
     " git commit
     autocmd Filetype gitcommit setlocal spell textwidth=72
@@ -154,6 +154,10 @@ set cscopetag
 " 0 = check cscope for definition of a symbol before checking ctags: 
 " 1 = check ctags for definition of a symbol before checking cscope: 
 set csto=0
+
+" XML Folding
+let g:xml_syntax_folding=1
+au FileType xml setlocal foldmethod=syntax
 
 " --------- commands --------- 
 
@@ -341,4 +345,17 @@ endfunction
 function! MyMode()
   return winwidth(0) > 60 ? lightline#mode() : ''
 endfunction
+
+
+" ----------------------------
+"          NERDTREE
+" ----------------------------
+" close vim if window left is NERDTree
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
+
+
+" ----------------------------
+"          VIM-NOTES
+" ----------------------------
+let g:notes_directories = ['~/Documents/vim-notes']
 
