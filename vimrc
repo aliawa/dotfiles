@@ -290,7 +290,7 @@ let g:lightline = {
       \ 'colorscheme': 'solarized',
       \ 'mode_map': { 'c': 'NORMAL' },
       \ 'active': {
-      \   'left' : [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ] ],
+      \   'left' : [ [ 'mode', 'paste' ], [ 'fugitive', 'filename', 'funcname' ] ],
       \   'right': [ [ 'lineinfo' ], [ 'percent' ] ] 
       \ },
       \ 'component_function': {
@@ -301,6 +301,7 @@ let g:lightline = {
       \   'fileformat': 'MyFileformat',
       \   'filetype': 'MyFiletype',
       \   'fileencoding': 'MyFileencoding',
+      \   'funcname' : 'MyFuncName',
       \   'mode': 'MyMode',
       \ },
       \ 'separator': { 'left': '', 'right': '' },
@@ -349,6 +350,10 @@ function! MyMode()
 endfunction
 
 
+function! MyFuncName()
+  return winwidth(0) > 60 ? tagbar#currenttag('%s',' '): ''
+endfunction
+
 " ----------------------------
 "          NERDTREE
 " ----------------------------
@@ -360,4 +365,16 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTree
 "          VIM-NOTES
 " ----------------------------
 let g:notes_directories = ['~/Documents/vim-notes']
+
+" ----------------------------
+"          TAGBAR
+" ----------------------------
+nnoremap <leader>t :TagbarOpenAutoClose<cr>
+
+
+" ----------------------------
+"          CTAGS.VIM
+" ----------------------------
+"let g:ctags_statusline=1 
+"let generate_tags=1
 

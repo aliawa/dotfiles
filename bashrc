@@ -75,3 +75,8 @@ if [ -f "$HOME/.bash_prompt" ] && [[ $- == *i* ]]; then
 fi
 
 
+# Fix tmux DISPLAY env variable
+for name in `tmux ls | sed 's/:.*//'`; do
+    tmux setenv -g -t $name DISPLAY $DISPLAY
+done
+

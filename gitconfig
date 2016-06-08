@@ -2,13 +2,16 @@
 	name = Ali Awais
     email= aawais@myworld.net
 [color]
-	ui = true
+    ui = true
+[color "status"]
+    added = yellow
+    changed = green
+    untracked = cyan
 [core]
 	excludesfile = /home/aawais/.gitignore
 	editor = vim
 [commit]
 [push]
-	default = simple
 [branch]
 	autosetuprebase = always
 [giggle]
