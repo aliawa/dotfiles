@@ -2,13 +2,16 @@
 	name = Ali Awais
     email= aawais@myworld.net
 [color]
-	ui = true
+    ui = true
+[color "status"]
+    added = yellow
+    changed = green
+    untracked = cyan
 [core]
 	excludesfile = /home/aawais/.gitignore
 	editor = vim
 [commit]
 [push]
-	default = simple
 [branch]
 	autosetuprebase = always
 [giggle]
@@ -29,6 +32,10 @@
 	g = grep --break --heading --line-number
 	lg-ascii = log --graph --pretty=format:'%h -%d %s (%cr) <%an>' --abbrev-commit
     lg =log --pretty=format:'%C(auto)%h %C(green)%ad | %C(blue)%<(12,trunc)%an%C(auto)%d %C(reset)%s%d' --graph --date=short
+    ignore   = update-index --assume-unchanged
+    unignore = update-index --no-assume-unchanged
+    ignored  = !git ls-files -v | grep "^[[:lower:]]"
+
 
 [merge]
 	tool = meld

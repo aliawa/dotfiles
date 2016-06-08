@@ -2,6 +2,12 @@
 
 # May be not needed
 # pathbase=/usr/kerberos/bin:/usr/local/bin:/bin:/usr/bin:/sbin
+#!/bin/bash
+
+# Local Path. Must call before sourcing /usr/local/env/bashrc
+# otherwise usever will overwrite it
+export PATH=$PATH:$HOME/bin:.
+
 
 # Source global definitions
 [ -f /etc/bashrc ] && . /etc/bashrc
@@ -11,7 +17,30 @@
 export P4DIFF=vimdiff
 export P4EDITOR=vim
 
+
 # ------ PRIVATE ------
-# Local Path
-export PATH=$PATH:$HOME/bin:.
+
+# Local Env
+export EDITOR=vimx
+
+# Local alias
+alias ptop='cd $PAN_BUILD_DIR/src'
+
+# Local functions
+setbranch() {
+    p4client hqna2           # set P4CLIENT=aawais-hqna2
+    pandir ~/pan             # set PANDIR=~/pan
+    usever $1
+    export CSCOPE_DB=$PAN_BUILD_DIR/src/cscope.dp.out
+    #export CSCOPE_DB=$PAN_BUILD_DIR/src/.csdb/cscope.out
+    ptop
+}
+
+make_rpm() {
+    echo "make -C $PAN_BUILD_DIR/pkg -j8 PLATFORM=$1 apps-panos-dpfs"
+    make -C $PAN_BUILD_DIR/pkg -j8 PLATFORM=$1 apps-panos-dpfs
+}
+
+
+
 

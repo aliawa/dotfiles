@@ -10,6 +10,8 @@ set ruler		    " show the cursor position all the time
 set showcmd		    " display partial commands in the last line
 set incsearch		" do incremental searching
 set nowrap
+set noshowmode      " because it is now provided by the status line
+
 
 " Pathogen plugin manager
 call pathogen#infect() 
@@ -74,7 +76,7 @@ if has("autocmd")
     "au FileType cpp set makeprg=g++\ %
 
     " 2 tab spaces for xml
-    autocmd FileType python setl sw=2 sts=2 et
+    autocmd FileType xml setl sw=2 sts=2 et
 
     " git commit
     autocmd Filetype gitcommit setlocal spell textwidth=72
@@ -154,6 +156,10 @@ set cscopetag
 " 0 = check cscope for definition of a symbol before checking ctags: 
 " 1 = check ctags for definition of a symbol before checking cscope: 
 set csto=0
+
+" XML Folding
+let g:xml_syntax_folding=1
+au FileType xml setlocal foldmethod=syntax
 
 " --------- commands --------- 
 
@@ -281,11 +287,11 @@ let g:scratch_autohide = 0
 " ----------------------------
 
 let g:lightline = {
-      \ 'colorscheme': 'wombat',
+      \ 'colorscheme': 'solarized',
       \ 'mode_map': { 'c': 'NORMAL' },
       \ 'active': {
-      \   'left' : [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ] ],
-      \   'right': [ [ 'lineinfo' ], [ 'percent' ], [ 'filetype' ] ] 
+      \   'left' : [ [ 'mode', 'paste' ], [ 'fugitive', 'filename', 'funcname' ] ],
+      \   'right': [ [ 'lineinfo' ], [ 'percent' ] ] 
       \ },
       \ 'component_function': {
       \   'modified': 'MyModified',
@@ -295,10 +301,11 @@ let g:lightline = {
       \   'fileformat': 'MyFileformat',
       \   'filetype': 'MyFiletype',
       \   'fileencoding': 'MyFileencoding',
+      \   'funcname' : 'MyFuncName',
       \   'mode': 'MyMode',
       \ },
-      \ 'separator': { 'left': '⮀', 'right': '⮂' },
-      \ 'subseparator': { 'left': '⮁', 'right': '⮃' }
+      \ 'separator': { 'left': '', 'right': '' },
+      \ 'subseparator': { 'left': '|', 'right': '«' }
       \ }
 
 function! MyModified()
@@ -306,7 +313,7 @@ function! MyModified()
 endfunction
 
 function! MyReadonly()
-  return &ft !~? 'help\|vimfiler\|gundo' && &readonly ? '⭤' : ''
+  return &ft !~? 'help\|vimfiler\|gundo' && &readonly ? 'x' : ''
 endfunction
 
 function! MyFilename()
@@ -321,7 +328,7 @@ endfunction
 function! MyFugitive()
   if &ft !~? 'vimfiler\|gundo' && exists("*fugitive#head")
     let _ = fugitive#head()
-    return strlen(_) ? '⭠ '._ : ''
+    return strlen(_) ? '| '._ : ''
   endif
   return ''
 endfunction
@@ -341,4 +348,33 @@ endfunction
 function! MyMode()
   return winwidth(0) > 60 ? lightline#mode() : ''
 endfunction
+
+
+function! MyFuncName()
+  return winwidth(0) > 60 ? tagbar#currenttag('%s',' '): ''
+endfunction
+
+" ----------------------------
+"          NERDTREE
+" ----------------------------
+" close vim if window left is NERDTree
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
+
+
+" ----------------------------
+"          VIM-NOTES
+" ----------------------------
+let g:notes_directories = ['~/Documents/vim-notes']
+
+" ----------------------------
+"          TAGBAR
+" ----------------------------
+nnoremap <leader>t :TagbarOpenAutoClose<cr>
+
+
+" ----------------------------
+"          CTAGS.VIM
+" ----------------------------
+"let g:ctags_statusline=1 
+"let generate_tags=1
 
