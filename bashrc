@@ -7,7 +7,7 @@
 [ -f ~/.bash_local ] && source ~/.bash_local
 
 # bash_sensible from https://github.com/mrzool/bash-sensible.git
-[ -f ~/bash-sensible/sensible.bash ] && source ~/bash-sensible/sensible.bash
+[ -f ~/.sensible.bash ] && source ~/.sensible.bash
 
 # Local path
 export PATH=$PATH:~/bin
