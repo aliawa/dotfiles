@@ -182,6 +182,7 @@ endif
 " --------- color shceme --------"
 "colorscheme base16-default
 set background=dark
+let g:solarized_termcolor=16
 colorscheme solarized
 
 " auto write file on leaving
