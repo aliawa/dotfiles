@@ -76,7 +76,9 @@ fi
 
 
 # Fix tmux DISPLAY env variable
-for name in `tmux ls 2> /dev/null | sed 's/:.*//'`; do
-    tmux setenv -g -t $name DISPLAY $DISPLAY
-done
+if [ -n "$DISPLAY" ]; then
+    for name in `tmux ls 2> /dev/null | sed 's/:.*//'`; do
+        tmux setenv -g -t $name DISPLAY $DISPLAY
+    done
+fi
 
