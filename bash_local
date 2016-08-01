@@ -30,7 +30,8 @@ alias ptop='cd $PAN_BUILD_DIR/src'
 setbranch() {
     p4client hqna2           # set P4CLIENT=aawais-hqna2
     pandir ~/pan             # set PANDIR=~/pan
-    usever $1
+    usever $1                # setup env for build, based on the branch ($1) and 
+                             # previously set PANDIR variable
     export CSCOPE_DB=$PAN_BUILD_DIR/src/cscope.dp.out
     #export CSCOPE_DB=$PAN_BUILD_DIR/src/.csdb/cscope.out
     ptop
