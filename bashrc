@@ -41,6 +41,9 @@ case "$OSTYPE" in
             fi
             alias minicom='sudo minicom -m -c on'
             alias grep='grep --color=auto'
+            if [ -f ~/.dircolors/dircolors.ansi-dark ]; then
+                eval `dircolors ~/.dircolors/dircolors.ansi-dark`
+            fi
             ;;
       cygwin) ;; # Windows
         bsd*) ;; # BSD

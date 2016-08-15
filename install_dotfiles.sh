@@ -19,6 +19,7 @@ files="bashrc bash_profile bash_prompt sensible.bash"
 files="$files vimrc vim"  
 files="$files gitconfig gitignore gitmessage.txt"
 files="$files tmux.conf tmux"
+files="$files dircolors-solarized"
 
 
 # --------------------------------------------------------------
