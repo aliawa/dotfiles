@@ -370,7 +370,11 @@ let g:notes_directories = ['~/Documents/vim-notes']
 " ----------------------------
 "          TAGBAR
 " ----------------------------
-nnoremap <leader>t :TagbarOpenAutoClose<cr>
+try
+    nnoremap <leader>t :TagbarOpenAutoClose<cr>
+    let g:tagbar_ctags_bin='/home/aawais/local/ctags' 
+catch
+endtry
 
 
 " ----------------------------
