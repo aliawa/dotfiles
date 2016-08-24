@@ -92,3 +92,7 @@ if [ -n "$DISPLAY" ]; then
     done
 fi
 
+# disable terminal flow control (Ctrl-S, Ctrl-Q)
+stty -ixon
+
+
