@@ -56,17 +56,24 @@ esac
 export LC_COLLATE=C
 
 
-
-
 # Colored man pages (see man 5 terminfo)
-export LESS_TERMCAP_mb=$'\E[01;31m'       # begin blinking
-export LESS_TERMCAP_md=$'\E[00;38;5;73m'  # begin bold
-export LESS_TERMCAP_me=$'\E[0m'           # end mode
-export LESS_TERMCAP_se=$'\E[0m'           # end standout-mode
-export LESS_TERMCAP_ue=$'\E[0m'           # end underline
-export LESS_TERMCAP_us=$'\E[04;38;5;146m' # begin underline
-export LESS_TERMCAP_so=$'\E[01;35;47m'    # standout statusbar/search -> magenta
-
+# mb -- begin blinking
+# md -- begin bold
+# me -- end mode
+# se -- end standout-mode
+# ue -- end underline
+# us -- begin underline
+# so -- standout statusbar/search -> magenta
+man() {
+    env \
+        LESS_TERMCAP_md=$'\E[00;38;5;73m'  \
+        LESS_TERMCAP_me=$'\E[0m'           \
+        LESS_TERMCAP_se=$'\E[0m'           \
+        LESS_TERMCAP_ue=$'\E[0m'           \
+        LESS_TERMCAP_us=$'\E[04;38;5;146m' \
+        LESS_TERMCAP_so=$'\E[01;35;47m'    \
+        man "$@"
+}
 
 
 # git completion
@@ -84,4 +91,8 @@ if [ -n "$DISPLAY" ]; then
         tmux setenv -g -t $name DISPLAY $DISPLAY
     done
 fi
+
+# disable terminal flow control (Ctrl-S, Ctrl-Q)
+stty -ixon
+
 
