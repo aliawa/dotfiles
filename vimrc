@@ -182,6 +182,7 @@ endif
 " --------- color shceme --------"
 "colorscheme base16-default
 set background=dark
+let g:solarized_termcolor=16
 colorscheme solarized
 
 " auto write file on leaving
@@ -369,7 +370,11 @@ let g:notes_directories = ['~/Documents/vim-notes']
 " ----------------------------
 "          TAGBAR
 " ----------------------------
-nnoremap <leader>t :TagbarOpenAutoClose<cr>
+try
+    nnoremap <leader>t :TagbarOpenAutoClose<cr>
+    let g:tagbar_ctags_bin='/home/aawais/local/ctags' 
+catch
+endtry
 
 
 " ----------------------------

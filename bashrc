@@ -7,7 +7,7 @@
 [ -f ~/.bash_local ] && source ~/.bash_local
 
 # bash_sensible from https://github.com/mrzool/bash-sensible.git
-[ -f ~/bash-sensible/sensible.bash ] && source ~/bash-sensible/sensible.bash
+[ -f ~/.sensible.bash ] && source ~/.sensible.bash
 
 # Local path
 export PATH=$PATH:~/bin
@@ -41,6 +41,9 @@ case "$OSTYPE" in
             fi
             alias minicom='sudo minicom -m -c on'
             alias grep='grep --color=auto'
+            if [ -f ~/.dircolors-solarized/dircolors.ansi-dark ]; then
+                eval `dircolors ~/.dircolors-solarized/dircolors.ansi-dark`
+            fi
             ;;
       cygwin) ;; # Windows
         bsd*) ;; # BSD
@@ -53,17 +56,24 @@ esac
 export LC_COLLATE=C
 
 
-
-
 # Colored man pages (see man 5 terminfo)
-export LESS_TERMCAP_mb=$'\E[01;31m'       # begin blinking
-export LESS_TERMCAP_md=$'\E[00;38;5;73m'  # begin bold
-export LESS_TERMCAP_me=$'\E[0m'           # end mode
-export LESS_TERMCAP_se=$'\E[0m'           # end standout-mode
-export LESS_TERMCAP_ue=$'\E[0m'           # end underline
-export LESS_TERMCAP_us=$'\E[04;38;5;146m' # begin underline
-export LESS_TERMCAP_so=$'\E[01;35;47m'    # standout statusbar/search -> magenta
-
+# mb -- begin blinking
+# md -- begin bold
+# me -- end mode
+# se -- end standout-mode
+# ue -- end underline
+# us -- begin underline
+# so -- standout statusbar/search -> magenta
+man() {
+    env \
+        LESS_TERMCAP_md=$'\E[00;38;5;73m'  \
+        LESS_TERMCAP_me=$'\E[0m'           \
+        LESS_TERMCAP_se=$'\E[0m'           \
+        LESS_TERMCAP_ue=$'\E[0m'           \
+        LESS_TERMCAP_us=$'\E[04;38;5;146m' \
+        LESS_TERMCAP_so=$'\E[01;35;47m'    \
+        man "$@"
+}
 
 
 # git completion
@@ -76,7 +86,13 @@ fi
 
 
 # Fix tmux DISPLAY env variable
-for name in `tmux ls | sed 's/:.*//'`; do
-    tmux setenv -g -t $name DISPLAY $DISPLAY
-done
+if [ -n "$DISPLAY" ]; then
+    for name in `tmux ls 2> /dev/null | sed 's/:.*//'`; do
+        tmux setenv -g -t $name DISPLAY $DISPLAY
+    done
+fi
+
+# disable terminal flow control (Ctrl-S, Ctrl-Q)
+stty -ixon
+
 
