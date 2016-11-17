@@ -23,10 +23,11 @@ export TERM="xterm-256color"
 case "$OSTYPE" in
      darwin*)  
             alias ls='ls -G'
-            alias ll='ls -l -G'
-            alias ldir='ls -G -dl */'
-            alias l.='ls -G -d .*'
-            alias latest='ls -G -l -F -t | head'
+            alias ll='ls -oFGh'
+            alias la='ls -AoFGh'
+            alias ldir='ls -odFGh */'
+            alias l.='ls -dG .*'
+            alias latest='CLICOLOR_FORCE=yes ls -oFGht | head'
             ;;
       linux*) 
             alias ls='ls --color=auto'
