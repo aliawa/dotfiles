@@ -17,13 +17,9 @@ set noshowmode      " because it is now provided by the status line
 call pathogen#infect() 
 
 " Airline Status line
-set t_Co=256
+" set t_Co=256
 set laststatus=2
-set encoding=utf-8
-" let g:airline_theme             = 'wombat'
-" let g:airline_inactive_collapse=0
-" "let g:airline_powerline_fonts = 1
-" let g:airline#extensions#whitespace#enabled=0
+" set encoding=utf-8
 
 
 " dont prompt to save chanes 
@@ -352,7 +348,11 @@ endfunction
 
 
 function! MyFuncName()
-  return winwidth(0) > 60 ? tagbar#currenttag('%s',' '): ''
+  if exists("*tagbar#currenttag")
+    let _ = tagbar#currenttag('%s',' ')
+    return ._
+  endif
+  return ''
 endfunction
 
 " ----------------------------
@@ -367,19 +367,17 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTree
 " ----------------------------
 let g:notes_directories = ['~/Documents/vim-notes']
 
+
 " ----------------------------
 "          TAGBAR
 " ----------------------------
 try
     nnoremap <leader>t :TagbarOpenAutoClose<cr>
-    let g:tagbar_ctags_bin='/home/aawais/local/ctags' 
+    if !executable('ctags')
+        let g:tagbar_ctags_bin='/home/aawais/local/ctags' 
+    endif
 catch
 endtry
 
 
-" ----------------------------
-"          CTAGS.VIM
-" ----------------------------
-"let g:ctags_statusline=1 
-"let generate_tags=1
 
