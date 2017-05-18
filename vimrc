@@ -177,9 +177,11 @@ endif
 
 " --------- color shceme --------"
 "colorscheme base16-default
-set background=dark
+set background=light
 let g:solarized_termcolor=16
 colorscheme solarized
+call togglebg#map("<F5>")
+
 
 " auto write file on leaving
 autocmd BufLeave,FocusLost * silent! wall
@@ -195,7 +197,6 @@ au BufNewFile,BufFilePre,BufRead *.md set filetype=markdown
 nnoremap + maO<esc>`a
 nnoremap - mao<esc>`a
 map <F4> :cnext<CR>
-nnoremap <F5> :GundoToggle<CR>
 map <F1> :ls<CR>
 
 " window navigation
@@ -204,19 +205,16 @@ nmap <silent> <C-j> :wincmd j<CR>
 nmap <silent> <C-k> :wincmd k<CR>
 nmap <silent> <C-l> :wincmd l<CR>
 
-"BDelete
-nnoremap <Leader>d :Bdelete<CR>
-" find counterpart file .h --> .cpp etc
-nnoremap <Leader>h :CounterpointNext<CR>
 nmap <Leader>f :cs f f 
 nmap <Leader>g :cs f g 
 nmap <Leader>n ]c <F6>
-" jk as ESC key
-inoremap jk <ESC>
+inoremap jk <ESC>        " jk as ESC key
+
 
 "Explore buffers
 :noremap <Tab> :bnext<CR>
 :noremap <S-Tab> :bprevious<CR>
+
 
 " Search for the ... arguments separated with whitespace (if no '!'),
 " " or with non-word characters (if '!' added to command).
@@ -372,12 +370,13 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTree
 " ----------------------------
 let g:notes_directories = ['~/Documents/vim-notes']
 
+
 " ----------------------------
 "          TAGBAR
 " ----------------------------
 try
     nnoremap <leader>t :TagbarOpenAutoClose<cr>
-        let g:tagbar_ctags_bin='/home/aawais/local/ctags' 
+    let g:tagbar_ctags_bin='/home/aawais/local/ctags' 
 catch
 endtry
 
