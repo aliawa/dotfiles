@@ -208,10 +208,15 @@ nmap <silent> <C-l> :wincmd l<CR>
 nnoremap <Leader>d :Bdelete<CR>
 " find counterpart file .h --> .cpp etc
 nnoremap <Leader>h :CounterpointNext<CR>
+nmap <Leader>f :cs f f 
+nmap <Leader>g :cs f g 
+nmap <Leader>n ]c <F6>
 " jk as ESC key
 inoremap jk <ESC>
 
-
+"Explore buffers
+:noremap <Tab> :bnext<CR>
+:noremap <S-Tab> :bprevious<CR>
 
 " Search for the ... arguments separated with whitespace (if no '!'),
 " " or with non-word characters (if '!' added to command).
@@ -367,17 +372,30 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTree
 " ----------------------------
 let g:notes_directories = ['~/Documents/vim-notes']
 
-
 " ----------------------------
 "          TAGBAR
 " ----------------------------
 try
     nnoremap <leader>t :TagbarOpenAutoClose<cr>
-    if !executable('ctags')
         let g:tagbar_ctags_bin='/home/aawais/local/ctags' 
-    endif
 catch
 endtry
 
+
+" ----------------------------
+"         VIMWIKI 
+" ----------------------------
+" let wiki = {}
+" let wiki.path = '~/vimwiki/'
+" let wiki.nested_syntaxes = {'python': 'python', 'c++': 'cpp'}
+" let g:vimwiki_list = [wiki]
+
+
+" ------------------------------------------------
+"                      NETRW
+" Remote/Local directory browsing and file editing
+" ------------------------------------------------
+" turn off the banner
+let g:netrw_banner=0
 
 
