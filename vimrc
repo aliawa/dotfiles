@@ -12,6 +12,7 @@ set incsearch		" do incremental searching
 set nowrap
 set noshowmode      " because it is now provided by the status line
 
+set splitright      " new vert splits appears on the right
 
 " Pathogen plugin manager
 call pathogen#infect() 
@@ -77,6 +78,26 @@ if has("autocmd")
     " git commit
     autocmd Filetype gitcommit setlocal spell textwidth=72
 
+    " auto write file on leaving
+    autocmd BufLeave,FocusLost * silent! wall
+
+    au BufRead,BufNewFile *.mlog        set filetype=mandlog
+    au BufNewFile,BufFilePre,BufRead *.md set filetype=markdown
+
+    " XML Folding
+    "let g:xml_syntax_folding=1
+    au FileType xml setlocal foldmethod=syntax
+
+    " Commenting blocks of code. Used later in key mapping
+    autocmd FileType c,cpp,java,scala let b:comment_leader = '// '
+    autocmd FileType sh,ruby,python   let b:comment_leader = '# '
+    autocmd FileType conf,fstab       let b:comment_leader = '# '
+    autocmd FileType tex              let b:comment_leader = '% '
+    autocmd FileType mail             let b:comment_leader = '> '
+    autocmd FileType vim              let b:comment_leader = '" '
+    noremap <silent> <Leader>cc :<C-B>silent <C-E>s/^/<C-R>=escape(b:comment_leader,'\/')<CR>/<CR>:nohlsearch<CR>
+    noremap <silent> <Leader>cu :<C-B>silent <C-E>s/^\V<C-R>=escape(b:comment_leader,'\/')<CR>//e<CR>:nohlsearch<CR>
+
 else
     set autoindent		" always set autoindenting on
 endif " has("autocmd")
@@ -140,34 +161,6 @@ set timeoutlen=4000
 set ttimeoutlen=100
 
 
-" ----------- cscope -------------
-
-" instead of showing cscope results in the current window
-" put them in the quickfix window then use :cn :cp to jump
-" :cl to see all and :cc [nr] to jump to [nr]
-set csqf=s-,c-,d-,i-,t-,e-
-
-" use both cscope and ctag for 'ctrl-]', ':ta', and 'vim -t'
-set cscopetag
-
-" 0 = check cscope for definition of a symbol before checking ctags: 
-" 1 = check ctags for definition of a symbol before checking cscope: 
-set csto=0
-
-
-" --------- File types --------"
-
-" XML Folding
-" let g:xml_syntax_folding=1
-au FileType xml setlocal foldmethod=syntax
-
-" auto write file on leaving
-autocmd BufLeave,FocusLost * silent! wall
-
-"au BufRead,BufNewFile *.mlog        set filetype=mandlog
-au BufNewFile,BufFilePre,BufRead *.md set filetype=markdown
-
-
 " --------- commands --------- 
 
 " diff between current buffer and the file it was opened from
@@ -211,6 +204,7 @@ colorscheme solarized
 " dont allow remapping of these keys
 nnoremap + maO<esc>`a
 nnoremap - mao<esc>`a
+inoremap jk <ESC>        
 
 " window navigation
 nmap <silent> <C-h> :wincmd h<CR>
@@ -218,15 +212,16 @@ nmap <silent> <C-j> :wincmd j<CR>
 nmap <silent> <C-k> :wincmd k<CR>
 nmap <silent> <C-l> :wincmd l<CR>
 
-nmap <Leader>f :cs f f 
-nmap <Leader>g :cs f g 
-nmap <Leader>n ]c 
-inoremap jk <ESC>        
+" Leader 
+nnoremap <Leader>h :cs f f %:t:r.h<CR>
+nnoremap <Leader>i :cs f f %:t:r.c<CR>
+nnoremap <Leader>f :cs f f 
+nnoremap <Leader>g :cs f g 
 
 
 "Explore buffers
-:noremap <Tab> :bnext<CR>
-:noremap <S-Tab> :bprevious<CR>
+noremap <Tab> :bnext<CR>
+noremap <S-Tab> :bprevious<CR>
 
 
 
@@ -240,16 +235,6 @@ call togglebg#map("<F5>")
 map <F9> :set invhls<CR>:let @/="<C-r><C-w>"<CR>/<BS>
 nnoremap <F10> :b <C-Z>
 
-
-"hit 'CTRL-\', followed by one of the cscope search types above (s,g,c,t,e,f,i,d)
-nmap <C-\>s :cs find s <C-R>=expand("<cword>")<CR><CR>  
-nmap <C-\>g :cs find g <C-R>=expand("<cword>")<CR><CR>  
-nmap <C-\>c :cs find c <C-R>=expand("<cword>")<CR><CR>  
-nmap <C-\>t :cs find t <C-R>=expand("<cword>")<CR><CR>  
-nmap <C-\>e :cs find e <C-R>=expand("<cword>")<CR><CR>  
-nmap <C-\>f :cs find f <C-R>=expand("<cfile>")<CR><CR>  
-nmap <C-\>i :cs find i <C-R>=expand("<cfile>")<CR><CR>
-nmap <C-\>d :cs find d <C-R>=expand("<cword>")<CR><CR>  
 
 
 "Search for selected text, forwards or backwards.
@@ -265,15 +250,6 @@ vnoremap <silent> # :<C-U>
   \gV:call setreg('"', old_reg, old_regtype)<CR>
 
 
-" Commenting blocks of code.
-autocmd FileType c,cpp,java,scala let b:comment_leader = '// '
-autocmd FileType sh,ruby,python   let b:comment_leader = '# '
-autocmd FileType conf,fstab       let b:comment_leader = '# '
-autocmd FileType tex              let b:comment_leader = '% '
-autocmd FileType mail             let b:comment_leader = '> '
-autocmd FileType vim              let b:comment_leader = '" '
-noremap <silent> <Leader>cc :<C-B>silent <C-E>s/^/<C-R>=escape(b:comment_leader,'\/')<CR>/<CR>:nohlsearch<CR>
-noremap <silent> <Leader>cu :<C-B>silent <C-E>s/^\V<C-R>=escape(b:comment_leader,'\/')<CR>//e<CR>:nohlsearch<CR>
 
 
 " ----------------------------
@@ -284,11 +260,45 @@ noremap <silent> <Leader>cu :<C-B>silent <C-E>s/^\V<C-R>=escape(b:comment_leader
 
 
 " ----------------------------
-"            GUNDO
+"            CSCOPE
 " ----------------------------
-"let g:gundo_width = 60
-"let g:gundo_preview_height = 40
-"let g:gundo_right = 1
+if has ("cscope")
+    " 0 = check cscope for definition of a symbol before checking ctags: 
+    " 1 = check ctags for definition of a symbol before checking cscope: 
+    set csto=0
+   
+	" search cscope database as well as the tag file
+	set cst
+
+    " instead of showing cscope results in the current window
+    " put them in the quickfix window then use :cn :cp to jump
+    " :cl to see all and :cc [nr] to jump to [nr]
+    set csqf=s-,c-,d-,i-,t-,e-
+
+    " use both cscope and ctag for 'ctrl-]', ':ta', and 'vim -t'
+    set cscopetag
+
+	set nocsverb
+	" add any database in current directory
+	if filereadable("cscope.out")
+		cs add cscope.out
+	" else add database pointed to by environment
+	elseif $CSCOPE_DB != ""
+		cs add $CSCOPE_DB
+	endif
+	set csverb
+
+    "hit 'CTRL-\', followed by one of the cscope search types above (s,g,c,t,e,f,i,d)
+    nmap <C-\>s :cs find s <C-R>=expand("<cword>")<CR><CR>  
+    nmap <C-\>g :cs find g <C-R>=expand("<cword>")<CR><CR>  
+    nmap <C-\>c :cs find c <C-R>=expand("<cword>")<CR><CR>  
+    nmap <C-\>t :cs find t <C-R>=expand("<cword>")<CR><CR>  
+    nmap <C-\>e :cs find e <C-R>=expand("<cword>")<CR><CR>  
+    nmap <C-\>f :cs find f <C-R>=expand("<cfile>")<CR><CR>  
+    nmap <C-\>i :cs find i <C-R>=expand("<cfile>")<CR><CR>
+    nmap <C-\>d :cs find d <C-R>=expand("<cword>")<CR><CR>  
+endif
+
 
 
 " ----------------------------
@@ -366,6 +376,12 @@ function! MyFuncName()
   endif
   return ''
 endfunction
+
+
+" ----------------------------
+"        MATCHIT.VIM
+" ----------------------------
+packadd! matchit
 
 " ----------------------------
 "          NERDTREE
