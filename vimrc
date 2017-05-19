@@ -16,14 +16,14 @@ set noshowmode      " because it is now provided by the status line
 " Pathogen plugin manager
 call pathogen#infect() 
 
-" Airline Status line
-" set t_Co=256
+" Status line
 set laststatus=2
-" set encoding=utf-8
-
 
 " dont prompt to save chanes 
 set hidden
+
+" Turn on color syntax highlighting
+syn on
 
 " leader
 let mapleader=","
@@ -90,7 +90,6 @@ set shiftwidth=4    "autoindent setting
 set expandtab       "convert tab to spaces
 set softtabstop=4   "backspace key treat four spaces like a tab
 
-
 set guioptions-=T   "No GUI toolbar
 set guioptions+=b   "show bottom scroll bar
 
@@ -100,14 +99,10 @@ set nohls           "Don't highlight search matches
 set ignorecase      "ignore case only if the search pattern is all in lower-case
 set smartcase
 
-set wildcharm=<C-Z>
-nnoremap <F10> :b <C-Z>
-
-
+set wildcharm=<C-Z> "??
 
 "ignore white spaces in diff mode
-set diffopt+=iwhite
-
+set diffopt+=iwhite "Review may result in bad formating
 
 "Don't put comment on newline when current line is commented
 set comments-=://
@@ -120,17 +115,20 @@ set autowrite
 
 "show some autocomplete options in status line
 set wildmenu
+
 " ignore filetypes for auto complete
 set wildignore+=*.lib,*.o,*.obj
 
+" ----------- clipboard -------------
+
 "share clipboard with X11 clipboard
 set clipboard+=unnamedplus
+
 " share clipboard with windows clipboard
 set clipboard+=unnamed
 
 
-" Turn on color syntax highlighting
-syn on
+" ----------- timeout -------------
 
 " turn on timing out on mappings and key codes
 set timeout
@@ -140,6 +138,9 @@ set timeoutlen=4000
 
 " timeout on key codes after 10th of a second.
 set ttimeoutlen=100
+
+
+" ----------- cscope -------------
 
 " instead of showing cscope results in the current window
 " put them in the quickfix window then use :cn :cp to jump
@@ -153,9 +154,19 @@ set cscopetag
 " 1 = check ctags for definition of a symbol before checking cscope: 
 set csto=0
 
+
+" --------- File types --------"
+
 " XML Folding
-let g:xml_syntax_folding=1
+" let g:xml_syntax_folding=1
 au FileType xml setlocal foldmethod=syntax
+
+" auto write file on leaving
+autocmd BufLeave,FocusLost * silent! wall
+
+"au BufRead,BufNewFile *.mlog        set filetype=mandlog
+au BufNewFile,BufFilePre,BufRead *.md set filetype=markdown
+
 
 " --------- commands --------- 
 
@@ -164,56 +175,6 @@ if !exists(":DiffOrig")
     command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis
                 \ | wincmd p | diffthis
 endif
-
-
-" -------- Settings -------- "
-
-" highlight spelling errors with a bright orange curly line
- if has("gui_running")
-     highlight SpellBad term=underline gui=undercurl guisp=Orange
-     set guifont=Monospace\ 11
- endif
-"  
-
-" --------- color shceme --------"
-"colorscheme base16-default
-set background=dark
-let g:solarized_termcolor=16
-colorscheme solarized
-call togglebg#map("<F5>")
-
-
-" auto write file on leaving
-autocmd BufLeave,FocusLost * silent! wall
-
-au BufRead,BufNewFile *.mlog        set filetype=mandlog
-au BufNewFile,BufFilePre,BufRead *.md set filetype=markdown
-
-" -------- Key Mappings -------- "
-
-" map + to insert blank line before current line
-" map - to insert blank line after current line
-" dont allow remapping of these keys
-nnoremap + maO<esc>`a
-nnoremap - mao<esc>`a
-map <F4> :cnext<CR>
-map <F1> :ls<CR>
-
-" window navigation
-nmap <silent> <C-h> :wincmd h<CR>
-nmap <silent> <C-j> :wincmd j<CR>
-nmap <silent> <C-k> :wincmd k<CR>
-nmap <silent> <C-l> :wincmd l<CR>
-
-nmap <Leader>f :cs f f 
-nmap <Leader>g :cs f g 
-nmap <Leader>n ]c <F6>
-inoremap jk <ESC>        " jk as ESC key
-
-
-"Explore buffers
-:noremap <Tab> :bnext<CR>
-:noremap <S-Tab> :bprevious<CR>
 
 
 " Search for the ... arguments separated with whitespace (if no '!'),
@@ -226,9 +187,58 @@ function! SearchMultiLine(bang, ...)
 endfunction
 
 
+" -------- Spellcheck -------- "
+
+" highlight spelling errors with a bright orange curly line
+ if has("gui_running")
+     highlight SpellBad term=underline gui=undercurl guisp=Orange
+     set guifont=Monospace\ 11
+ endif
+"  
+
+" --------- color shceme --------"
+
+set background=dark
+let g:solarized_termcolor=16
+colorscheme solarized
+
+
+
+" -------- Key Mappings -------- "
+
+" map + to insert blank line before current line
+" map - to insert blank line after current line
+" dont allow remapping of these keys
+nnoremap + maO<esc>`a
+nnoremap - mao<esc>`a
+
+" window navigation
+nmap <silent> <C-h> :wincmd h<CR>
+nmap <silent> <C-j> :wincmd j<CR>
+nmap <silent> <C-k> :wincmd k<CR>
+nmap <silent> <C-l> :wincmd l<CR>
+
+nmap <Leader>f :cs f f 
+nmap <Leader>g :cs f g 
+nmap <Leader>n ]c 
+inoremap jk <ESC>        
+
+
+"Explore buffers
+:noremap <Tab> :bnext<CR>
+:noremap <S-Tab> :bprevious<CR>
+
+
+
+" --------- Function Keys ----------
+
+map <F1> :ls<CR>
+map <F4> :cnext<CR>
+call togglebg#map("<F5>")
 "F9 toggles the hlsearch setting. The 'inv' prefix on a boolean setting toggles
 "it. The trailing '/<BS>' clears the clutter left in the : command area
 map <F9> :set invhls<CR>:let @/="<C-r><C-w>"<CR>/<BS>
+nnoremap <F10> :b <C-Z>
 
 
 "hit 'CTRL-\', followed by one of the cscope search types above (s,g,c,t,e,f,i,d)
@@ -255,7 +265,6 @@ vnoremap <silent> # :<C-U>
   \gV:call setreg('"', old_reg, old_regtype)<CR>
 
 
-
 " Commenting blocks of code.
 autocmd FileType c,cpp,java,scala let b:comment_leader = '// '
 autocmd FileType sh,ruby,python   let b:comment_leader = '# '
@@ -270,7 +279,7 @@ noremap <silent> <Leader>cu :<C-B>silent <C-E>s/^\V<C-R>=escape(b:comment_leader
 " ----------------------------
 "            SCRATCH          
 " ----------------------------
-let g:scratch_autohide = 0
+"let g:scratch_autohide = 0
 
 
 
@@ -368,7 +377,7 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTree
 " ----------------------------
 "          VIM-NOTES
 " ----------------------------
-let g:notes_directories = ['~/Documents/vim-notes']
+"let g:notes_directories = ['~/Documents/vim-notes']
 
 
 " ----------------------------
