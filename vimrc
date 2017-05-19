@@ -177,7 +177,7 @@ endif
 
 " --------- color shceme --------"
 "colorscheme base16-default
-set background=light
+set background=dark
 let g:solarized_termcolor=16
 colorscheme solarized
 call togglebg#map("<F5>")
