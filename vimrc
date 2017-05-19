@@ -17,13 +17,9 @@ set noshowmode      " because it is now provided by the status line
 call pathogen#infect() 
 
 " Airline Status line
-set t_Co=256
+" set t_Co=256
 set laststatus=2
-set encoding=utf-8
-" let g:airline_theme             = 'wombat'
-" let g:airline_inactive_collapse=0
-" "let g:airline_powerline_fonts = 1
-" let g:airline#extensions#whitespace#enabled=0
+" set encoding=utf-8
 
 
 " dont prompt to save chanes 
@@ -181,9 +177,11 @@ endif
 
 " --------- color shceme --------"
 "colorscheme base16-default
-set background=dark
+set background=light
 let g:solarized_termcolor=16
 colorscheme solarized
+call togglebg#map("<F5>")
+
 
 " auto write file on leaving
 autocmd BufLeave,FocusLost * silent! wall
@@ -199,7 +197,6 @@ au BufNewFile,BufFilePre,BufRead *.md set filetype=markdown
 nnoremap + maO<esc>`a
 nnoremap - mao<esc>`a
 map <F4> :cnext<CR>
-nnoremap <F5> :GundoToggle<CR>
 map <F1> :ls<CR>
 
 " window navigation
@@ -208,13 +205,15 @@ nmap <silent> <C-j> :wincmd j<CR>
 nmap <silent> <C-k> :wincmd k<CR>
 nmap <silent> <C-l> :wincmd l<CR>
 
-"BDelete
-nnoremap <Leader>d :Bdelete<CR>
-" find counterpart file .h --> .cpp etc
-nnoremap <Leader>h :CounterpointNext<CR>
-" jk as ESC key
-inoremap jk <ESC>
+nmap <Leader>f :cs f f 
+nmap <Leader>g :cs f g 
+nmap <Leader>n ]c <F6>
+inoremap jk <ESC>        " jk as ESC key
 
+
+"Explore buffers
+:noremap <Tab> :bnext<CR>
+:noremap <S-Tab> :bprevious<CR>
 
 
 " Search for the ... arguments separated with whitespace (if no '!'),
@@ -352,7 +351,11 @@ endfunction
 
 
 function! MyFuncName()
-  return winwidth(0) > 60 ? tagbar#currenttag('%s',' '): ''
+  if exists("*tagbar#currenttag")
+    let _ = tagbar#currenttag('%s',' ')
+    return ._
+  endif
+  return ''
 endfunction
 
 " ----------------------------
@@ -367,6 +370,7 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTree
 " ----------------------------
 let g:notes_directories = ['~/Documents/vim-notes']
 
+
 " ----------------------------
 "          TAGBAR
 " ----------------------------
@@ -378,8 +382,19 @@ endtry
 
 
 " ----------------------------
-"          CTAGS.VIM
+"         VIMWIKI 
 " ----------------------------
-"let g:ctags_statusline=1 
-"let generate_tags=1
+" let wiki = {}
+" let wiki.path = '~/vimwiki/'
+" let wiki.nested_syntaxes = {'python': 'python', 'c++': 'cpp'}
+" let g:vimwiki_list = [wiki]
+
+
+" ------------------------------------------------
+"                      NETRW
+" Remote/Local directory browsing and file editing
+" ------------------------------------------------
+" turn off the banner
+let g:netrw_banner=0
+
 
