@@ -12,18 +12,19 @@ set incsearch		" do incremental searching
 set nowrap
 set noshowmode      " because it is now provided by the status line
 
+set splitright      " new vert splits appears on the right
 
 " Pathogen plugin manager
 call pathogen#infect() 
 
-" Airline Status line
-" set t_Co=256
+" Status line
 set laststatus=2
-" set encoding=utf-8
-
 
 " dont prompt to save chanes 
 set hidden
+
+" Turn on color syntax highlighting
+syn on
 
 " leader
 let mapleader=","
@@ -77,6 +78,26 @@ if has("autocmd")
     " git commit
     autocmd Filetype gitcommit setlocal spell textwidth=72
 
+    " auto write file on leaving
+    autocmd BufLeave,FocusLost * silent! wall
+
+    au BufRead,BufNewFile *.mlog        set filetype=mandlog
+    au BufNewFile,BufFilePre,BufRead *.md set filetype=markdown
+
+    " XML Folding
+    "let g:xml_syntax_folding=1
+    au FileType xml setlocal foldmethod=syntax
+
+    " Commenting blocks of code. Used later in key mapping
+    autocmd FileType c,cpp,java,scala let b:comment_leader = '// '
+    autocmd FileType sh,ruby,python   let b:comment_leader = '# '
+    autocmd FileType conf,fstab       let b:comment_leader = '# '
+    autocmd FileType tex              let b:comment_leader = '% '
+    autocmd FileType mail             let b:comment_leader = '> '
+    autocmd FileType vim              let b:comment_leader = '" '
+    noremap <silent> <Leader>cc :<C-B>silent <C-E>s/^/<C-R>=escape(b:comment_leader,'\/')<CR>/<CR>:nohlsearch<CR>
+    noremap <silent> <Leader>cu :<C-B>silent <C-E>s/^\V<C-R>=escape(b:comment_leader,'\/')<CR>//e<CR>:nohlsearch<CR>
+
 else
     set autoindent		" always set autoindenting on
 endif " has("autocmd")
@@ -90,7 +111,6 @@ set shiftwidth=4    "autoindent setting
 set expandtab       "convert tab to spaces
 set softtabstop=4   "backspace key treat four spaces like a tab
 
-
 set guioptions-=T   "No GUI toolbar
 set guioptions+=b   "show bottom scroll bar
 
@@ -100,14 +120,10 @@ set nohls           "Don't highlight search matches
 set ignorecase      "ignore case only if the search pattern is all in lower-case
 set smartcase
 
-set wildcharm=<C-Z>
-nnoremap <F10> :b <C-Z>
-
-
+set wildcharm=<C-Z> "??
 
 "ignore white spaces in diff mode
-set diffopt+=iwhite
-
+set diffopt+=iwhite "Review may result in bad formating
 
 "Don't put comment on newline when current line is commented
 set comments-=://
@@ -120,17 +136,20 @@ set autowrite
 
 "show some autocomplete options in status line
 set wildmenu
+
 " ignore filetypes for auto complete
 set wildignore+=*.lib,*.o,*.obj
 
+" ----------- clipboard -------------
+
 "share clipboard with X11 clipboard
 set clipboard+=unnamedplus
+
 " share clipboard with windows clipboard
 set clipboard+=unnamed
 
 
-" Turn on color syntax highlighting
-syn on
+" ----------- timeout -------------
 
 " turn on timing out on mappings and key codes
 set timeout
@@ -141,21 +160,6 @@ set timeoutlen=4000
 " timeout on key codes after 10th of a second.
 set ttimeoutlen=100
 
-" instead of showing cscope results in the current window
-" put them in the quickfix window then use :cn :cp to jump
-" :cl to see all and :cc [nr] to jump to [nr]
-set csqf=s-,c-,d-,i-,t-,e-
-
-" use both cscope and ctag for 'ctrl-]', ':ta', and 'vim -t'
-set cscopetag
-
-" 0 = check cscope for definition of a symbol before checking ctags: 
-" 1 = check ctags for definition of a symbol before checking cscope: 
-set csto=0
-
-" XML Folding
-let g:xml_syntax_folding=1
-au FileType xml setlocal foldmethod=syntax
 
 " --------- commands --------- 
 
@@ -164,56 +168,6 @@ if !exists(":DiffOrig")
     command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis
                 \ | wincmd p | diffthis
 endif
-
-
-" -------- Settings -------- "
-
-" highlight spelling errors with a bright orange curly line
- if has("gui_running")
-     highlight SpellBad term=underline gui=undercurl guisp=Orange
-     set guifont=Monospace\ 11
- endif
-"  
-
-" --------- color shceme --------"
-"colorscheme base16-default
-set background=light
-let g:solarized_termcolor=16
-colorscheme solarized
-call togglebg#map("<F5>")
-
-
-" auto write file on leaving
-autocmd BufLeave,FocusLost * silent! wall
-
-au BufRead,BufNewFile *.mlog        set filetype=mandlog
-au BufNewFile,BufFilePre,BufRead *.md set filetype=markdown
-
-" -------- Key Mappings -------- "
-
-" map + to insert blank line before current line
-" map - to insert blank line after current line
-" dont allow remapping of these keys
-nnoremap + maO<esc>`a
-nnoremap - mao<esc>`a
-map <F4> :cnext<CR>
-map <F1> :ls<CR>
-
-" window navigation
-nmap <silent> <C-h> :wincmd h<CR>
-nmap <silent> <C-j> :wincmd j<CR>
-nmap <silent> <C-k> :wincmd k<CR>
-nmap <silent> <C-l> :wincmd l<CR>
-
-nmap <Leader>f :cs f f 
-nmap <Leader>g :cs f g 
-nmap <Leader>n ]c <F6>
-inoremap jk <ESC>
-
-
-"Explore buffers
-:noremap <Tab> :bnext<CR>
-:noremap <S-Tab> :bprevious<CR>
 
 
 " Search for the ... arguments separated with whitespace (if no '!'),
@@ -226,20 +180,63 @@ function! SearchMultiLine(bang, ...)
 endfunction
 
 
+" -------- Spellcheck -------- "
+
+" highlight spelling errors with a bright orange curly line
+ if has("gui_running")
+     highlight SpellBad term=underline gui=undercurl guisp=Orange
+     set guifont=Monospace\ 11
+ endif
+"  
+
+" --------- color shceme --------"
+
+set background=dark
+let g:solarized_termcolor=16
+colorscheme solarized
+
+
+
+" -------- Key Mappings -------- "
+
+" map + to insert blank line before current line
+" map - to insert blank line after current line
+" dont allow remapping of these keys
+nnoremap + maO<esc>`a
+nnoremap - mao<esc>`a
+inoremap jk <ESC>        
+
+" window navigation
+nmap <silent> <C-h> :wincmd h<CR>
+nmap <silent> <C-j> :wincmd j<CR>
+nmap <silent> <C-k> :wincmd k<CR>
+nmap <silent> <C-l> :wincmd l<CR>
+
+" Leader 
+nnoremap <Leader>h :cs f f %:t:r.h<CR>
+nnoremap <Leader>i :cs f f %:t:r.c<CR>
+nnoremap <Leader>f :cs f f 
+nnoremap <Leader>g :cs f g 
+inoremap jk <ESC>
+nmap <Leader>n ]c <F6>
+
+
+"Explore buffers
+noremap <Tab> :bnext<CR>
+noremap <S-Tab> :bprevious<CR>
+
+
+
+" --------- Function Keys ----------
+
+map <F1> :ls<CR>
+map <F4> :cnext<CR>
+call togglebg#map("<F5>")
 "F9 toggles the hlsearch setting. The 'inv' prefix on a boolean setting toggles
 "it. The trailing '/<BS>' clears the clutter left in the : command area
 map <F9> :set invhls<CR>:let @/="<C-r><C-w>"<CR>/<BS>
+nnoremap <F10> :b <C-Z>
 
-
-"hit 'CTRL-\', followed by one of the cscope search types above (s,g,c,t,e,f,i,d)
-nmap <C-\>s :cs find s <C-R>=expand("<cword>")<CR><CR>  
-nmap <C-\>g :cs find g <C-R>=expand("<cword>")<CR><CR>  
-nmap <C-\>c :cs find c <C-R>=expand("<cword>")<CR><CR>  
-nmap <C-\>t :cs find t <C-R>=expand("<cword>")<CR><CR>  
-nmap <C-\>e :cs find e <C-R>=expand("<cword>")<CR><CR>  
-nmap <C-\>f :cs find f <C-R>=expand("<cfile>")<CR><CR>  
-nmap <C-\>i :cs find i <C-R>=expand("<cfile>")<CR><CR>
-nmap <C-\>d :cs find d <C-R>=expand("<cword>")<CR><CR>  
 
 
 "Search for selected text, forwards or backwards.
@@ -256,30 +253,54 @@ vnoremap <silent> # :<C-U>
 
 
 
-" Commenting blocks of code.
-autocmd FileType c,cpp,java,scala let b:comment_leader = '// '
-autocmd FileType sh,ruby,python   let b:comment_leader = '# '
-autocmd FileType conf,fstab       let b:comment_leader = '# '
-autocmd FileType tex              let b:comment_leader = '% '
-autocmd FileType mail             let b:comment_leader = '> '
-autocmd FileType vim              let b:comment_leader = '" '
-noremap <silent> <Leader>cc :<C-B>silent <C-E>s/^/<C-R>=escape(b:comment_leader,'\/')<CR>/<CR>:nohlsearch<CR>
-noremap <silent> <Leader>cu :<C-B>silent <C-E>s/^\V<C-R>=escape(b:comment_leader,'\/')<CR>//e<CR>:nohlsearch<CR>
-
 
 " ----------------------------
 "            SCRATCH          
 " ----------------------------
-let g:scratch_autohide = 0
+"let g:scratch_autohide = 0
 
 
 
 " ----------------------------
-"            GUNDO
+"            CSCOPE
 " ----------------------------
-"let g:gundo_width = 60
-"let g:gundo_preview_height = 40
-"let g:gundo_right = 1
+if has ("cscope")
+    " 0 = check cscope for definition of a symbol before checking ctags: 
+    " 1 = check ctags for definition of a symbol before checking cscope: 
+    set csto=0
+   
+	" search cscope database as well as the tag file
+	set cst
+
+    " instead of showing cscope results in the current window
+    " put them in the quickfix window then use :cn :cp to jump
+    " :cl to see all and :cc [nr] to jump to [nr]
+    set csqf=s-,c-,d-,i-,t-,e-
+
+    " use both cscope and ctag for 'ctrl-]', ':ta', and 'vim -t'
+    set cscopetag
+
+	set nocsverb
+	" add any database in current directory
+	if filereadable("cscope.out")
+		cs add cscope.out
+	" else add database pointed to by environment
+	elseif $CSCOPE_DB != ""
+		cs add $CSCOPE_DB
+	endif
+	set csverb
+
+    "hit 'CTRL-\', followed by one of the cscope search types above (s,g,c,t,e,f,i,d)
+    nmap <C-\>s :cs find s <C-R>=expand("<cword>")<CR><CR>  
+    nmap <C-\>g :cs find g <C-R>=expand("<cword>")<CR><CR>  
+    nmap <C-\>c :cs find c <C-R>=expand("<cword>")<CR><CR>  
+    nmap <C-\>t :cs find t <C-R>=expand("<cword>")<CR><CR>  
+    nmap <C-\>e :cs find e <C-R>=expand("<cword>")<CR><CR>  
+    nmap <C-\>f :cs find f <C-R>=expand("<cfile>")<CR><CR>  
+    nmap <C-\>i :cs find i <C-R>=expand("<cfile>")<CR><CR>
+    nmap <C-\>d :cs find d <C-R>=expand("<cword>")<CR><CR>  
+endif
+
 
 
 " ----------------------------
@@ -358,6 +379,12 @@ function! MyFuncName()
   return ''
 endfunction
 
+
+" ----------------------------
+"        MATCHIT.VIM
+" ----------------------------
+packadd! matchit
+
 " ----------------------------
 "          NERDTREE
 " ----------------------------
@@ -368,7 +395,7 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTree
 " ----------------------------
 "          VIM-NOTES
 " ----------------------------
-let g:notes_directories = ['~/Documents/vim-notes']
+"let g:notes_directories = ['~/Documents/vim-notes']
 
 
 " ----------------------------
