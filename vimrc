@@ -208,7 +208,7 @@ nmap <silent> <C-l> :wincmd l<CR>
 nmap <Leader>f :cs f f 
 nmap <Leader>g :cs f g 
 nmap <Leader>n ]c <F6>
-inoremap jk <ESC>        " jk as ESC key
+inoremap jk <ESC>
 
 
 "Explore buffers
