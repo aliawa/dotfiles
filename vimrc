@@ -383,6 +383,7 @@ endfunction
 " ----------------------------
 "        MATCHIT.VIM
 " ----------------------------
+" '!' after packadd tells vim not to load if --noplugin option given
 packadd! matchit
 
 " ----------------------------
