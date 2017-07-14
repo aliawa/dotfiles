@@ -204,7 +204,7 @@ colorscheme solarized
 " dont allow remapping of these keys
 nnoremap + maO<esc>`a
 nnoremap - mao<esc>`a
-inoremap jk <ESC>        
+inoremap jk <ESC>
 
 " window navigation
 nmap <silent> <C-h> :wincmd h<CR>
