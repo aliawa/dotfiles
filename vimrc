@@ -1,12 +1,10 @@
 "No original vi's bugs and limitations.
 set nocompatible
 
-"backspace removes autoindent, join lines, insert start
-set backspace=indent,eol,start
-
+set backspace=indent,eol,start       " :h 'backspace
 set nobackup		" do not keep a backup file ending with "~" character
 set history=50		" keep 50 lines of command line history
-set ruler		    " show the cursor position all the time
+" set ruler		    " show the cursor position all the time
 set showcmd		    " display partial commands in the last line
 set incsearch		" do incremental searching
 set nowrap
@@ -384,7 +382,9 @@ endfunction
 "        MATCHIT.VIM
 " ----------------------------
 " '!' after packadd tells vim not to load if --noplugin option given
-packadd! matchit
+if has('packadd')
+    packadd! matchit
+endif
 
 " ----------------------------
 "          NERDTREE
