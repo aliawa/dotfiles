@@ -380,9 +380,9 @@ endfunction
 
 " ----------------------------
 "        MATCHIT.VIM
-" ----------------------------
-" '!' after packadd tells vim not to load if --noplugin option given
-if has('packadd')
+"" ----------------------------
+"packadd was introduced in 7.4
+if v:version > 703
     packadd! matchit
 endif
 
