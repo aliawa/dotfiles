@@ -224,6 +224,10 @@ noremap <Tab> :bnext<CR>
 noremap <S-Tab> :bprevious<CR>
 
 
+nnoremap <Leader>n :set nonumber<CR> :set norelativenumber<CR>
+nnoremap gV `[v`]
+map <F3> :set paste!<CR>
+imap <F3> <C-O>:set paste!<CR>
 
 " --------- Function Keys ----------
 
