@@ -204,7 +204,7 @@ colorscheme solarized
 " dont allow remapping of these keys
 nnoremap + maO<esc>`a
 nnoremap - mao<esc>`a
-inoremap jk <ESC>        
+inoremap jk <ESC>
 
 " window navigation
 nmap <silent> <C-h> :wincmd h<CR>
@@ -217,13 +217,17 @@ nnoremap <Leader>h :cs f f %:t:r.h<CR>
 nnoremap <Leader>i :cs f f %:t:r.c<CR>
 nnoremap <Leader>f :cs f f 
 nnoremap <Leader>g :cs f g 
-
+nnoremap <Leader>e :!p4 edit %<CR>L<CR>
 
 "Explore buffers
-noremap <Tab> :bnext<CR>
-noremap <S-Tab> :bprevious<CR>
+noremap <Leader>nb :bnext<CR>
+noremap <Leader>pb :bprevious<CR>
 
+" highlight last inserted text
+nnoremap gV `[v`]
 
+nnoremap B ^
+nnoremap E $
 
 " --------- Function Keys ----------
 
@@ -370,11 +374,10 @@ endfunction
 
 
 function! MyFuncName()
-  if exists("*tagbar#currenttag")
-    let _ = tagbar#currenttag('%s',' ')
-    return ._
-  endif
-  return ''
+"    if exists("*tagbar#currenttag")
+     return winwidth(0) > 60 ? tagbar#currenttag('%s',' '): ''
+"    endif
+"    return ''
 endfunction
 
 
@@ -421,5 +424,14 @@ endtry
 " ------------------------------------------------
 " turn off the banner
 let g:netrw_banner=0
+
+
+" ------------------------------------------------
+"                      CTRL-P 
+" ------------------------------------------------
+let g:ctrlp_match_window = 'bottom,order:ttb'
+let g:ctrlp_switch_buffer = 0
+let g:ctrlp_working_path_mode = 0
+" let g:ctrlp_user_command = 'ag %s -l --nocolor --hidden -g ""'
 
 
