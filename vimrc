@@ -215,7 +215,7 @@ nnoremap <Leader>h :cs f f %:t:r.h<CR>
 nnoremap <Leader>i :cs f f %:t:r.c<CR>
 nnoremap <Leader>f :cs f f 
 nnoremap <Leader>g :cs f g 
-nnoremap <Leader>e :!p4 edit %<CR>L<CR>
+nnoremap <Leader>e :!p4 edit %
 inoremap jk <ESC>
 
 "Explore buffers

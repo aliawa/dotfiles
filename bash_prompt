@@ -90,9 +90,9 @@ set_prompts() {
 #    PS_pre+="\n" # newline
     PS_pre="\[\033]0;\w\007\]" # set the terminal title to the current working directory
     PS_pre+="\[$userStyle\]\u" # username
-    PS_pre+="\[$reset$white\]@"
+    PS_pre+="\[$reset$yellow\]@"
     PS_pre+="\[$hostStyle\]\h" # host
-    PS_pre+="\[$reset$white\]: "
+    PS_pre+="\[$reset$yellow\]: "
     PS_pre+="\[$green\]\w" # working directory
     PS_pre+="\[$reset\]"
     PS_post="\n"

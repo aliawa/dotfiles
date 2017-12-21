@@ -15,7 +15,7 @@ export PATH=$PATH:~/bin
 
 # set vim as default editor
 export EDITOR=vim
-set -o vi
+# set -o vi
 export TERM="xterm-256color"
 
 
