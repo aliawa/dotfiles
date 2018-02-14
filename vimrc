@@ -307,6 +307,15 @@ if has ("cscope")
     nmap <C-\>d :cs find d <C-R>=expand("<cword>")<CR><CR>  
 endif
 
+" ----------------------------
+"          TAGBAR
+" ----------------------------
+try
+    call tagbar#CloseWindow() " cause tagbar to be loaded
+    nnoremap <leader>t :TagbarOpenAutoClose<cr>
+    let g:tagbar_ctags_bin='/home/aawais/local/ctags' 
+catch
+endtry
 
 
 " ----------------------------
@@ -378,11 +387,13 @@ endfunction
 
 
 function! MyFuncName()
-"    if exists("*tagbar#currenttag")
-     return winwidth(0) > 60 ? tagbar#currenttag('%s',' '): ''
-"    endif
-"    return ''
+    if exists('g:loaded_tagbar')
+        return winwidth(0) > 60 ? tagbar#currenttag('%s',' '): ''
+    else
+        return ''
+    endif
 endfunction
+
 
 
 " ----------------------------
@@ -406,14 +417,6 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTree
 "let g:notes_directories = ['~/Documents/vim-notes']
 
 
-" ----------------------------
-"          TAGBAR
-" ----------------------------
-try
-    nnoremap <leader>t :TagbarOpenAutoClose<cr>
-    let g:tagbar_ctags_bin='/home/aawais/local/ctags' 
-catch
-endtry
 
 
 " ----------------------------
