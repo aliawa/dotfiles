@@ -18,7 +18,6 @@ call plug#begin('~/.vim/plugged')
     Plug 'vim-scripts/DrawIt'
     Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
     Plug 'altercation/vim-colors-solarized'
-    Plug 'kien/ctrlp.vim'
     Plug 'lifepillar/vim-cheat40'
 call plug#end()
  
@@ -41,7 +40,7 @@ set ttimeoutlen=100             " timeout on key codes after 10th of a second.
 " color scheme
 colorscheme solarized
 set background=dark
-
+autocmd VimResized * wincmd =  " auto splits equilzation
 
 " --------------------------------------------------
 " Editor Behavior
@@ -59,9 +58,14 @@ set wildmenu                    " show some autocomplete options in status line
 set wildignore+=*.lib,*.o,*.obj " ignore filetypes for auto complete
 set wildmode=list:longest       " list all mathces and complete till logest common
 set nowrap
+set autoread					" reload file if changed outside vim but not in vim
+augroup autoRead           
+    autocmd!
+    autocmd CursorHold * silent! checktime
+augroup END                     " auto reload if no cursor movement
 
-
-
+                                          
+                                               
 " --------------------------------------------------
 " indentation
 " --------------------------------------------------
@@ -82,6 +86,7 @@ set nohls                       " Don't highlight search matches
 set ignorecase                  " ignore case if search pattern is all in lower-case
 set smartcase                   " override ignorecase if uppercase letters typed
 set incsearch		            " do incremental searching
+set infercase                   " don't ignore case in completions
 
 " --------------------------------------------------
 " Clipboard
@@ -98,6 +103,17 @@ set clipboard+=unnamed          " share clipboard with windows clipboard
 " set ttymouse=xterm2
 
 
+
+" ------------------------------------------------
+" Diff
+" ------------------------------------------------
+" From https://bluz71.github.io/2017/05/15/vim-tips-tricks.html
+if  has("patch-8.1.0360")
+    set diffopt=filler,internal,algorithm:histogram,indent-heuristic
+endif
+
+
+
 " ------------------------------------------------
 " Key Mappings
 " ------------------------------------------------
@@ -110,30 +126,34 @@ nmap <silent> <C-h> :wincmd h<CR>
 nmap <silent> <C-j> :wincmd j<CR>
 nmap <silent> <C-k> :wincmd k<CR>
 nmap <silent> <C-l> :wincmd l<CR>
+nmap <silent> <C-p> :FZF<CR>
 
 " Leader 
-set wildcharm=<C-z>                                                 "used in mapping below
-nnoremap <leader>b :buffer<Space><C-z>|                             "invoke :buffers and list the available buffers
-nnoremap <Leader>h :cs f f %:t:r.h<CR>|                             "cscope Go to .h file
-nnoremap <Leader>i :cs f f %:t:r.c<CR>|                             "cscope Go to .c file  
-nnoremap <Leader>f :cs f f|                                         "cscope find file
-nnoremap <Leader>g :cs f g|                                         "cscope find symbol
-nnoremap <Leader>n :set nonumber<CR> :set norelativenumber<CR>|     "disable all numbering
+set wildcharm=<C-z>
+nnoremap <leader>b :buffer<Space><C-z>|                             " invoke :buffers and list the available buffers
+nnoremap <Leader>h :cs f f %:t:r.h<CR>|                             " cscope Go to .h file
+nnoremap <Leader>i :cs f f %:t:r.c<CR>|                             " cscope Go to .c file  
+nnoremap <Leader>f :cs f f|                                         " cscope find file
+nnoremap <Leader>g :cs f g|                                         " cscope find symbol
+nnoremap <Leader>n :set nonumber<CR> :set norelativenumber<CR>|     " disable all numbering
 
-map <F3> :set paste!<CR>:startinsert<CR>
+map <F3> :set paste!<CR>:startinsert<CR>|                           " Normal mode -> Paset+Insert mode
 set pastetoggle=<F3>                                                " F3 toggles in and out of paste mode
 
-"Search for selected text, forwards or backwards.
+"Search for selected text, forwards 
 vnoremap <silent> * :<C-U>
   \let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>
   \gvy/<C-R><C-R>=substitute(
   \escape(@", '/\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
   \gV:call setreg('"', old_reg, old_regtype)<CR>
-vnoremap <silent> # :<C-U>
+
+"Search for selected text, backwards.
+vnoremap <silent> # :<C-U>  
   \let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>
   \gvy?<C-R><C-R>=substitute(
   \escape(@", '?\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
   \gV:call setreg('"', old_reg, old_regtype)<CR>
+
 
 
 
@@ -151,24 +171,22 @@ endif
 if has("autocmd")
     augroup vimrcEx
         au!
-
-        " For all text files set 'textwidth' to 78 characters.
+        " Textwidth for text files
         autocmd FileType text setlocal textwidth=78
 
-        " When editing a file, always jump to the last known cursor position.
+        " Jump to last known cursor position
         autocmd BufReadPost *
                     \ if line("'\"") > 1 && line("'\"") <= line("$") |
                     \   exe "normal! g`\"" |
                     \ endif
     augroup END
 
-    " Commenting blocks of code. Used later in key mapping
+    " Commenting blocks of code.
+    let b:comment_leader = '#' " Default value
     autocmd FileType c,cpp,java,scala let b:comment_leader = '//'
     autocmd FileType sh,ruby,python   let b:comment_leader = '# '
-    autocmd FileType conf,fstab       let b:comment_leader = '# '
-    autocmd FileType tex              let b:comment_leader = '% '
-    autocmd FileType mail             let b:comment_leader = '> '
     autocmd FileType vim              let b:comment_leader = '" '
+
     noremap <silent> <Leader>cc :<C-U>
       \let old_reg=getreg('/')<Bar>let old_regtype=getregtype('/')<CR>
       \:<C-B>silent <C-E>s/^/<C-R>=escape(b:comment_leader,'\/')<CR>/<CR>:nohlsearch<CR>
@@ -178,7 +196,6 @@ if has("autocmd")
       \let old_reg=getreg('/')<Bar>let old_regtype=getregtype('/')<CR>
       \:<C-B>silent <C-E>s/^\V<C-R>=escape(b:comment_leader,'\/')<CR>//e<CR>:nohlsearch<CR>
       \:call setreg('/', old_reg, old_regtype)<CR>
-
 
 endif
 
@@ -243,6 +260,8 @@ let g:lightline = {
       \ 'separator': { 'left': '', 'right': '' },
       \ 'subseparator': { 'left': '', 'right': '' }
       \ }
+
+
 
 
 " ------------------------------------------------
