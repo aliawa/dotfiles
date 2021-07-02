@@ -103,17 +103,6 @@ set clipboard+=unnamed          " share clipboard with windows clipboard
 " set ttymouse=xterm2
 
 
-
-" ------------------------------------------------
-" Diff
-" ------------------------------------------------
-" From https://bluz71.github.io/2017/05/15/vim-tips-tricks.html
-if  has("patch-8.1.0360")
-    set diffopt=filler,internal,algorithm:histogram,indent-heuristic
-endif
-
-
-
 " ------------------------------------------------
 " Key Mappings
 " ------------------------------------------------
