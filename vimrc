@@ -18,6 +18,8 @@ call plug#begin('~/.vim/plugged')
     Plug 'vim-scripts/DrawIt'
     Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
     Plug 'altercation/vim-colors-solarized'
+    Plug 'kien/ctrlp.vim'
+    Plug 'lifepillar/vim-cheat40'
 call plug#end()
  
 
@@ -38,7 +40,7 @@ set ttimeoutlen=100             " timeout on key codes after 10th of a second.
 
 " color scheme
 colorscheme solarized
-let g:solarized_termcolors=16
+set background=dark
 
 
 " --------------------------------------------------
@@ -242,40 +244,9 @@ let g:lightline = {
       \ 'subseparator': { 'left': '', 'right': '' }
       \ }
 
-" ----------------------------
-"          NERDTREE
-" ----------------------------
-" close vim if window left is NERDTree
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
-
-
-" ----------------------------
-"          VIM-NOTES
-" ----------------------------
-"let g:notes_directories = ['~/Documents/vim-notes']
-
-
-
-
-" ----------------------------
-"         VIMWIKI 
-" ----------------------------
-" let wiki = {}
-" let wiki.path = '~/vimwiki/'
-" let wiki.nested_syntaxes = {'python': 'python', 'c++': 'cpp'}
-" let g:vimwiki_list = [wiki]
-
 
 " ------------------------------------------------
-"                      NETRW
-" Remote/Local directory browsing and file editing
-" ------------------------------------------------
-" turn off the banner
-let g:netrw_banner=0
-
-
-" ------------------------------------------------
-"                      CTRL-P 
+" Ctrlp.vim
 " ------------------------------------------------
 let g:ctrlp_match_window = 'bottom,order:ttb'
 let g:ctrlp_switch_buffer = 0
