@@ -19,6 +19,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
     Plug 'altercation/vim-colors-solarized'
     Plug 'lifepillar/vim-cheat40'
+    Plug 'ycm-core/YouCompleteMe', { 'do': './install.py', 'for': ['python'] }
 call plug#end()
  
 
@@ -38,8 +39,8 @@ set timeoutlen=4000             " wait 4 seconds for all keys in a mapping to be
 set ttimeoutlen=100             " timeout on key codes after 10th of a second.
 
 " color scheme
-colorscheme solarized
 set background=dark
+colorscheme solarized
 autocmd VimResized * wincmd =  " auto splits equilzation
 
 " --------------------------------------------------
