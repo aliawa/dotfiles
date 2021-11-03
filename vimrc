@@ -52,6 +52,7 @@ syntax on                       " Turn on syntax highlighting
 set number
 set backspace=indent,eol,start  " backspace dels autoindents, end of lines
 set splitright                  " new vert splits appears on the right
+set splitbelow                  " new vert splits appears below the current window
 set autowrite                   " automatically save files when changing buffers
 set scrolloff=2                 " Two lines of context visible around the cursor at all times.
 set wildmenu                    " show some autocomplete options in status line
@@ -99,8 +100,10 @@ set clipboard+=unnamed          " share clipboard with windows clipboard
 " Mouse support
 " ------------------------------------------------
 " set mouse=n
-" set mouse=a                   " mouse does not select line numbers but create problem with 'y' copying to clipboard
-" set ttymouse=xterm2
+" set mouse=a                   " Use mouse in all modes 
+                                "   Good - mouse selection does not select line numbers
+                                "   Bad - copy to clipboard does not work
+" set ttymouse=xterm2            
 
 
 " ------------------------------------------------
@@ -231,6 +234,34 @@ endif
 
 
 " ------------------------------------------------
+" User defined
+" ------------------------------------------------
+function Appinfofix()
+    let pos = search("NAT lookup dst key is copied:", "W")
+    while(pos)
+        let mylst = []
+        for i in range(pos+1,pos+5)
+            call add(mylst, matchstr(getline(i), '    .\+$'))
+            let line = join(mylst, "")
+            let line = substitute(line, '[ .]\+', "", "g")
+            let line = "dst key added - " . line
+            call setline(pos, line)
+        endfor
+        let pos = search("NAT lookup dst key is copied:", "W")
+    endwhile
+endfunction
+
+
+function! Scratch()
+    split
+    noswapfile enew                 "noswapfile {command}, run command without creating a swapfile
+    setlocal buftype=nowrite
+    setlocal bufhidden=hide
+    file scratch                    "set name of current file
+endfunction
+
+
+" ------------------------------------------------
 " Lightline
 " ------------------------------------------------
 " Requires: tagbar, set laststatus=2, powerline fonts provided by iterm2
@@ -241,10 +272,10 @@ let g:lightline = {
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ],
       \             [ 'readonly', 'filename', 'modified', 'tagbar' ] ],
-      \   'right': [ [ 'lineinfo' ], [ 'percent' ], ['charvalhex']  ] 
+      \   'right': [ [ 'lineinfo' ], [ 'percent' ], ['byteofset'], ['charvalhex']  ] 
       \ },
       \ 'component': {
-      \     'tagbar': '%{tagbar#currenttag("%s", "", "f")}', 'charvalhex': '0x%B'
+      \     'tagbar': '%{tagbar#currenttag("%s", "", "f")}', 'charvalhex': '0x%B', 'byteofset':'%o'
       \ },
       \ 'separator': { 'left': '', 'right': '' },
       \ 'subseparator': { 'left': '', 'right': '' }
