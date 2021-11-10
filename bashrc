@@ -15,7 +15,6 @@ export PATH=$PATH:~/bin
 
 # set vim as default editor
 export EDITOR=vim
-# set -o vi
 export TERM="xterm-256color"
 
 
@@ -80,10 +79,7 @@ man() {
 # git completion
 [ -f ~/bin/git-completion.bash ] && . ~/bin/git-completion.bash
 
-# prompt
-if [ -f "$HOME/.bash_prompt" ] && [[ $- == *i* ]]; then
-    source "$HOME/.bash_prompt"
-fi
+export PS1=$'\[\e[35;40m\]\u\[\e[m\]\[\e[40m\]@\[\e[m\]\[\e[33;40m\]\h\[\e[m\]\[\e[40m\]:\[\e[m\]\[\e[32;40m\]\w\[\e[m\] \u00bb '
 
 
 # Fix tmux DISPLAY env variable
@@ -97,3 +93,5 @@ fi
 stty -ixon
 
 
+# fuzzy finder
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash

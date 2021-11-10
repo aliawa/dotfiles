@@ -1,6 +1,8 @@
 [user]
 	name = Ali Awais
-    email= aawais@myworld.net
+	email = aawais@paloaltonetworks.com
+[includeIf "gitdir:~/pan/"]
+        path = ~/pan/.gitconfig
 [color]
     ui = true
 [color "status"]
@@ -10,6 +12,7 @@
 [core]
 	excludesfile = /home/aawais/.gitignore
 	editor = vim
+	preloadIndex = true
 [commit]
 [push]
 [branch]
@@ -39,3 +42,9 @@
 
 [merge]
 	tool = meld
+[submodule]
+	recurse = true
+[diff]
+	tool = vimdiff
+[difftool]
+	prompt = false

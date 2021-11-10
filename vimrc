@@ -18,10 +18,9 @@ call plug#begin('~/.vim/plugged')
     Plug 'vim-scripts/DrawIt'
     Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
     Plug 'altercation/vim-colors-solarized'
-    Plug 'lifepillar/vim-cheat40'
     Plug 'ycm-core/YouCompleteMe', { 'do': './install.py', 'for': ['python'] }
 call plug#end()
- 
+
 
 " --------------------------------------------------
 " UI Behavior
@@ -39,9 +38,12 @@ set timeoutlen=4000             " wait 4 seconds for all keys in a mapping to be
 set ttimeoutlen=100             " timeout on key codes after 10th of a second.
 
 " color scheme
-set background=dark
 colorscheme solarized
-autocmd VimResized * wincmd =  " auto splits equilzation
+set background=dark
+augroup autoUI
+    autocmd!
+    autocmd VimResized * wincmd =  " auto splits equilzation
+augroup END
 
 " --------------------------------------------------
 " Editor Behavior
@@ -61,10 +63,15 @@ set wildignore+=*.lib,*.o,*.obj " ignore filetypes for auto complete
 set wildmode=list:longest       " list all mathces and complete till logest common
 set nowrap
 set autoread					" reload file if changed outside vim but not in vim
-augroup autoRead           
+augroup autoEdit
     autocmd!
-    autocmd CursorHold * silent! checktime
-augroup END                     " auto reload if no cursor movement
+    autocmd CursorHold * silent! checktime     " auto reload if no cursor movement
+
+    autocmd BufReadPost *
+            \ if line("'\"") > 1 && line("'\"") <= line("$") |
+            \   exe "normal! g`\"" |
+            \ endif                            " Jump to last known cursor position
+augroup END
 
                                           
                                                
@@ -100,17 +107,16 @@ set clipboard+=unnamed          " share clipboard with windows clipboard
 " ------------------------------------------------
 " Mouse support
 " ------------------------------------------------
+" set ttymouse=xterm2
 " set mouse=n
-" set mouse=a                   " Use mouse in all modes 
-                                "   Good - mouse selection does not select line numbers
-                                "   Bad - copy to clipboard does not work
-" set ttymouse=xterm2            
+" set mouse=a                   " mouse does not select line numbers but create problem with 'y' copying to clipboard
 
 
 " ------------------------------------------------
 " Key Mappings
 " ------------------------------------------------
 let mapleader=","
+let maplocalleader="\\"
 
 inoremap jk <ESC>
 
@@ -129,9 +135,13 @@ nnoremap <Leader>i :cs f f %:t:r.c<CR>|                             " cscope Go 
 nnoremap <Leader>f :cs f f|                                         " cscope find file
 nnoremap <Leader>g :cs f g|                                         " cscope find symbol
 nnoremap <Leader>n :set nonumber<CR> :set norelativenumber<CR>|     " disable all numbering
+nnoremap <Leader>t :TagbarToggle<CR>|                               " Tagbar
+
 
 map <F3> :set paste!<CR>:startinsert<CR>|                           " Normal mode -> Paset+Insert mode
 set pastetoggle=<F3>                                                " F3 toggles in and out of paste mode
+
+nmap <F4> :cn<CR>
 
 "Search for selected text, forwards 
 vnoremap <silent> * :<C-U>
@@ -148,49 +158,61 @@ vnoremap <silent> # :<C-U>
   \gV:call setreg('"', old_reg, old_regtype)<CR>
 
 
+" move line up/down
+noremap - ddp
+noremap _ ddkP
+
+" uppercase
+inoremap <c-u> <esc>viwUi
+nnoremap <c-u> viwU<esc>
+
+" wrap text
+nnoremap <leader>" viw<esc>a"<esc>bi"<esc>lel
+nnoremap <leader>' viw<esc>a'<esc>bi'<esc>lel
+noremap <leader>"" <esc>a"<esc>`<i"<esc>lel
+
+" vimrc editing
+nnoremap <leader>ev :split $MYVIMRC<cr>
+nnoremap <leader>sv :source $MYVIMRC<cr>
+
+" move
+nnoremap L $
+
+"previous buffer
+nnoremap <leader>pb :execute "rightbelow vsplit " . bufname("#")<cr>
+
+" insert semicolon at the end of line
+nnoremap <leader>; execute "normal! mqA;\<esc>`q"
 
 
 " ------------------------------------------------
-" Custom commands
+" Abbreviations
+" ------------------------------------------------
+iabbrev waht what
+iabbrev tehn then
+iabbrev adn  and
+
+
+
+" ------------------------------------------------
+" Filetype specific
 " ------------------------------------------------
 
-" diff between current buffer and the file it was opened from
-if !exists(":DiffOrig")
-    command DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis
-                \ | wincmd p | diffthis
-endif
+" .sml is not Standard ML
+augroup sml_ft
+    au!
+    autocmd BufNewFile,BufRead *.sml
+        \set filetype=c
+        \set syntax=c
+augroup END
 
+augroup fileType
+    autocmd!
+    autocmd FileType c,cpp,java,scala noremap <buffer> <localleader>c :normal! I// 
+    autocmd FileType sh,ruby,python   noremap <buffer> <localleader>c :normal! I# 
+    autocmd FileType vim              noremap <buffer> <localleader>c :normal! I" 
+augroup END
 
-if has("autocmd")
-    augroup vimrcEx
-        au!
-        " Textwidth for text files
-        autocmd FileType text setlocal textwidth=78
-
-        " Jump to last known cursor position
-        autocmd BufReadPost *
-                    \ if line("'\"") > 1 && line("'\"") <= line("$") |
-                    \   exe "normal! g`\"" |
-                    \ endif
-    augroup END
-
-    " Commenting blocks of code.
-    let b:comment_leader = '#' " Default value
-    autocmd FileType c,cpp,java,scala let b:comment_leader = '//'
-    autocmd FileType sh,ruby,python   let b:comment_leader = '# '
-    autocmd FileType vim              let b:comment_leader = '" '
-
-    noremap <silent> <Leader>cc :<C-U>
-      \let old_reg=getreg('/')<Bar>let old_regtype=getregtype('/')<CR>
-      \:<C-B>silent <C-E>s/^/<C-R>=escape(b:comment_leader,'\/')<CR>/<CR>:nohlsearch<CR>
-      \:call setreg('/', old_reg, old_regtype)<CR>
-
-    noremap <silent> <Leader>cu 
-      \let old_reg=getreg('/')<Bar>let old_regtype=getregtype('/')<CR>
-      \:<C-B>silent <C-E>s/^\V<C-R>=escape(b:comment_leader,'\/')<CR>//e<CR>:nohlsearch<CR>
-      \:call setreg('/', old_reg, old_regtype)<CR>
-
-endif
 
 
 " ------------------------------------------------
@@ -235,8 +257,9 @@ endif
 
 
 " ------------------------------------------------
-" User defined
+" Custom commands
 " ------------------------------------------------
+
 function Appinfofix()
     let pos = search("NAT lookup dst key is copied:", "W")
     while(pos)
@@ -260,6 +283,13 @@ function! Scratch()
     setlocal bufhidden=hide
     file scratch                    "set name of current file
 endfunction
+
+
+" diff between current buffer and the file it was opened from
+if !exists(":DiffOrig")
+    command DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis
+                \ | wincmd p | diffthis
+endif
 
 
 " ------------------------------------------------
@@ -286,11 +316,6 @@ let g:lightline = {
 
 
 " ------------------------------------------------
-" Ctrlp.vim
+" Tagbar
 " ------------------------------------------------
-let g:ctrlp_match_window = 'bottom,order:ttb'
-let g:ctrlp_switch_buffer = 0
-let g:ctrlp_working_path_mode = 0
-" let g:ctrlp_user_command = 'ag %s -l --nocolor --hidden -g ""'
-
-
+let g:tagbar_autoclose = 1
