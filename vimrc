@@ -277,10 +277,10 @@ endfunction
 
 
 function! Scratch()
-    split
+    exec winheight(0)/4."split"
     noswapfile enew                 "noswapfile {command}, run command without creating a swapfile
     setlocal buftype=nowrite
-    setlocal bufhidden=hide
+    setlocal bufhidden=wipe
     file scratch                    "set name of current file
 endfunction
 
