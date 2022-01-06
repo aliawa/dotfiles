@@ -19,6 +19,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
     Plug 'altercation/vim-colors-solarized'
     Plug 'ycm-core/YouCompleteMe', { 'do': './install.py', 'for': ['python'] }
+    Plug 'godlygeek/tabular'
 call plug#end()
 
 
@@ -31,11 +32,11 @@ set history=50		            " keep 50 lines of command line history
 set showcmd		                " display partial commands in the last line
 set noshowmode                  " because it is now provided by the status line
 set hidden                      " dont prompt to save changes 
-set guioptions-=T               " No GUI toolbar
-set guioptions+=b               " show bottom scroll bar
 set timeout                     " turn on timing out on mappings and key codes
 set timeoutlen=4000             " wait 4 seconds for all keys in a mapping to be pressed.
 set ttimeoutlen=100             " timeout on key codes after 10th of a second.
+set guioptions-=T               " No GUI toolbar
+set guioptions+=b               " show bottom scroll bar
 
 " color scheme
 colorscheme solarized
@@ -44,6 +45,11 @@ augroup autoUI
     autocmd!
     autocmd VimResized * wincmd =  " auto splits equilzation
 augroup END
+
+" Macvim font
+if has("mac") || has("macunix")
+    set guifont=Monaco\ for\ Powerline:h14
+endif
 
 " --------------------------------------------------
 " Editor Behavior
@@ -200,7 +206,7 @@ iabbrev adn  and
 
 " .sml is not Standard ML
 augroup sml_ft
-    au!
+    autocmd!
     autocmd BufNewFile,BufRead *.sml
         \set filetype=c
         \set syntax=c
@@ -281,8 +287,14 @@ function! Scratch()
     noswapfile enew                 "noswapfile {command}, run command without creating a swapfile
     setlocal buftype=nowrite
     setlocal bufhidden=wipe
-    file scratch                    "set name of current file
+    setlocal buftype=nofile
+    file __scratch__                "set name of current file
 endfunction
+
+function! Ref(file)
+    exec winheight(0)/5."split".a:file
+endfunction
+
 
 
 " diff between current buffer and the file it was opened from
