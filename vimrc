@@ -181,9 +181,6 @@ noremap <leader>"" <esc>a"<esc>`<i"<esc>lel
 nnoremap <leader>ev :split $MYVIMRC<cr>
 nnoremap <leader>sv :source $MYVIMRC<cr>
 
-" move
-nnoremap L $
-
 "previous buffer
 nnoremap <leader>pb :execute "rightbelow vsplit " . bufname("#")<cr>
 
@@ -217,6 +214,7 @@ augroup fileType
     autocmd FileType c,cpp,java,scala noremap <buffer> <localleader>c :normal! I// 
     autocmd FileType sh,ruby,python   noremap <buffer> <localleader>c :normal! I# 
     autocmd FileType vim              noremap <buffer> <localleader>c :normal! I" 
+    autocmd Filetype sh               let b:is_bash=1
 augroup END
 
 
@@ -331,3 +329,4 @@ let g:lightline = {
 " Tagbar
 " ------------------------------------------------
 let g:tagbar_autoclose = 1
+
