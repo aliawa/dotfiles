@@ -20,6 +20,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'altercation/vim-colors-solarized'
     Plug 'ycm-core/YouCompleteMe', { 'do': './install.py', 'for': ['python'] }
     Plug 'godlygeek/tabular'
+    Plug 'andymass/vim-matchup'
 call plug#end()
 
 
@@ -138,8 +139,8 @@ set wildcharm=<C-z>
 nnoremap <leader>b :buffer<Space><C-z>|                             " invoke :buffers and list the available buffers
 nnoremap <Leader>h :cs f f %:t:r.h<CR>|                             " cscope Go to .h file
 nnoremap <Leader>i :cs f f %:t:r.c<CR>|                             " cscope Go to .c file  
-nnoremap <Leader>f :cs f f|                                         " cscope find file
-nnoremap <Leader>g :cs f g|                                         " cscope find symbol
+nnoremap <Leader>f :cs f f |                                        " cscope find file
+nnoremap <Leader>g :cs f g |                                        " cscope find symbol
 nnoremap <Leader>n :set nonumber<CR> :set norelativenumber<CR>|     " disable all numbering
 nnoremap <Leader>t :TagbarToggle<CR>|                               " Tagbar
 
@@ -184,8 +185,12 @@ nnoremap <leader>sv :source $MYVIMRC<cr>
 "previous buffer
 nnoremap <leader>pb :execute "rightbelow vsplit " . bufname("#")<cr>
 
+" comment out lines
+noremap <leader>cc :normal I# <cr>
+
 " insert semicolon at the end of line
-nnoremap <leader>; execute "normal! mqA;\<esc>`q"
+nnoremap <leader>; :normal! mqA;<esc>`q <cr>
+
 
 
 " ------------------------------------------------
@@ -264,7 +269,7 @@ endif
 " Custom commands
 " ------------------------------------------------
 
-function Appinfofix()
+function! Appinfofix()
     let pos = search("NAT lookup dst key is copied:", "W")
     while(pos)
         let mylst = []
