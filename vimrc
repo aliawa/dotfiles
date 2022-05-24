@@ -18,9 +18,9 @@ call plug#begin('~/.vim/plugged')
     Plug 'vim-scripts/DrawIt'
     Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
     Plug 'altercation/vim-colors-solarized'
-    Plug 'ycm-core/YouCompleteMe', { 'do': './install.py', 'for': ['python'] }
     Plug 'godlygeek/tabular'
     Plug 'andymass/vim-matchup'
+    Plug 'vim-scripts/gtags.vim'
 call plug#end()
 
 
@@ -228,13 +228,6 @@ augroup END
 " Cscope
 " ------------------------------------------------
 if has ("cscope")
-    " 0 = check cscope for definition of a symbol before checking ctags: 
-    " 1 = check ctags for definition of a symbol before checking cscope: 
-    set csto=0
-   
-	" search cscope database as well as the tag file
-	set cst
-
     " instead of showing cscope results in the current window
     " put them in the quickfix window then use :cn :cp to jump
     " :cl to see all and :cc [nr] to jump to [nr]
@@ -242,16 +235,6 @@ if has ("cscope")
 
     " use both cscope and ctag for 'ctrl-]', ':ta', and 'vim -t'
     set cscopetag
-
-	set nocsverb
-	" add any database in current directory
-	if filereadable("cscope.out")
-		cs add cscope.out
-	" else add database pointed to by environment
-	elseif $CSCOPE_DB != ""
-		cs add $CSCOPE_DB
-	endif
-	set csverb
 
     "hit 'CTRL-\', followed by one of the cscope search types above (s,g,c,t,e,f,i,d)
     nmap <C-\>s :cs find s <C-R>=expand("<cword>")<CR><CR>  
@@ -334,4 +317,11 @@ let g:lightline = {
 " Tagbar
 " ------------------------------------------------
 let g:tagbar_autoclose = 1
+
+
+" ------------------------------------------------
+" Gtags
+" ------------------------------------------------
+set csprg=gtags-cscope
+cs add GTAGS
 
