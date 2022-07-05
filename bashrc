@@ -10,7 +10,7 @@
 [ -f ~/.sensible.bash ] && source ~/.sensible.bash
 
 # Local path
-export PATH=$PATH:~/bin
+export PATH=$PATH:~/bin:~/pan_bin
 
 
 # set vim as default editor
@@ -95,3 +95,14 @@ stty -ixon
 
 # fuzzy finder
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+# export FZF_DEFAULT_COMMAND='fd --type f'
+export FZF_DEFAULT_COMMAND='if [ -f gtags.files ]; then cat gtags.files; else fd --type f; fi' 
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+_fzf_compgen_path() {
+  fd --hidden --follow --exclude ".git" . "$1"
+}
+_fzf_compgen_dir() {
+  fd --type d --hidden --follow --exclude ".git" . "$1"
+}
+
+

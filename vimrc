@@ -21,6 +21,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'godlygeek/tabular'
     Plug 'andymass/vim-matchup'
     Plug 'vim-scripts/gtags.vim'
+    Plug 'tpope/vim-fugitive'
 call plug#end()
 
 
