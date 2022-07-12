@@ -119,7 +119,7 @@ set clipboard+=unnamed          " share clipboard with windows clipboard
 
 
 " ------------------------------------------------
-" Key Mappings
+" My Mappings
 " ------------------------------------------------
 let mapleader=","
 let maplocalleader="\\"
@@ -186,6 +186,9 @@ nnoremap <leader>pb :execute "rightbelow vsplit " . bufname("#")<cr>
 
 " insert semicolon at the end of line
 nnoremap <leader>; execute "normal! mqA;\<esc>`q"
+
+" map ha 'hex address' convert lines of the form 'addr-451ab906-95e2' to 'addr-69.26.185.6-38370'
+nnoremap <leader>ha :s/addr-\(..\)\(..\)\(..\)\(..\)-\([a-f0-9]\{3,4\}\)/\=printf("addr-%d.%d.%d.%d-%d",str2nr(submatch(1),16), str2nr(submatch(2),16),str2nr(submatch(3),16),str2nr(submatch (4),16),str2nr(submatch(5),16))/ <CR><CR>
 
 
 " ------------------------------------------------
@@ -261,10 +264,10 @@ endif
 
 
 " ------------------------------------------------
-" Custom commands
+" My commands
 " ------------------------------------------------
 
-function Appinfofix()
+function! Appinfofix()
     let pos = search("NAT lookup dst key is copied:", "W")
     while(pos)
         let mylst = []
@@ -302,6 +305,21 @@ if !exists(":DiffOrig")
 endif
 
 
+" Adds offsets to SIP:Received output in packetdiag log.
+" Place cursor on first line of payload and run :call Add_offset(1448),
+" where 1448 is the offset of the first byte, obtained from tcp seq output
+function! Add_offset(start)
+    let pos = getpos('.')[1]
+    let endpos = search('^-\+$')
+    let offst = a:start
+    for i in range(pos,endpos-1)
+        let line = getline(i)
+        call setline(i, printf("%5d 0x%04x %s",offst,offst, line))
+        let offst = offst + strdisplaywidth(line)
+    endfor
+endfunction
+        
+
 " ------------------------------------------------
 " Lightline
 " ------------------------------------------------
@@ -329,4 +347,12 @@ let g:lightline = {
 " Tagbar
 " ------------------------------------------------
 let g:tagbar_autoclose = 1
+
+
+" ------------------------------------------------
+" NETRW
+" ------------------------------------------------
+let g:netrw_preview   = 1
+let g:netrw_liststyle = 3
+let g:netrw_winsize   = 30
 
