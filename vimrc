@@ -18,8 +18,10 @@ call plug#begin('~/.vim/plugged')
     Plug 'vim-scripts/DrawIt'
     Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
     Plug 'altercation/vim-colors-solarized'
-    Plug 'ycm-core/YouCompleteMe', { 'do': './install.py', 'for': ['python'] }
     Plug 'godlygeek/tabular'
+    Plug 'andymass/vim-matchup'
+    Plug 'vim-scripts/gtags.vim'
+    Plug 'tpope/vim-fugitive'
 call plug#end()
 
 
@@ -138,8 +140,8 @@ set wildcharm=<C-z>
 nnoremap <leader>b :buffer<Space><C-z>|                             " invoke :buffers and list the available buffers
 nnoremap <Leader>h :cs f f %:t:r.h<CR>|                             " cscope Go to .h file
 nnoremap <Leader>i :cs f f %:t:r.c<CR>|                             " cscope Go to .c file  
-nnoremap <Leader>f :cs f f|                                         " cscope find file
-nnoremap <Leader>g :cs f g|                                         " cscope find symbol
+nnoremap <Leader>f :cs f f |                                        " cscope find file
+nnoremap <Leader>g :cs f g |                                        " cscope find symbol
 nnoremap <Leader>n :set nonumber<CR> :set norelativenumber<CR>|     " disable all numbering
 nnoremap <Leader>t :TagbarToggle<CR>|                               " Tagbar
 
@@ -184,8 +186,12 @@ nnoremap <leader>sv :source $MYVIMRC<cr>
 "previous buffer
 nnoremap <leader>pb :execute "rightbelow vsplit " . bufname("#")<cr>
 
+" comment out lines
+noremap <leader>cc :normal I# <cr>
+
 " insert semicolon at the end of line
-nnoremap <leader>; execute "normal! mqA;\<esc>`q"
+nnoremap <leader>; :normal! mqA;<esc>`q <cr>
+
 
 " map ha 'hex address' convert lines of the form 'addr-451ab906-95e2' to 'addr-69.26.185.6-38370'
 nnoremap <leader>ha :s/addr-\(..\)\(..\)\(..\)\(..\)-\([a-f0-9]\{3,4\}\)/\=printf("addr-%d.%d.%d.%d-%d",str2nr(submatch(1),16), str2nr(submatch(2),16),str2nr(submatch(3),16),str2nr(submatch (4),16),str2nr(submatch(5),16))/ <CR><CR>
@@ -226,13 +232,6 @@ augroup END
 " Cscope
 " ------------------------------------------------
 if has ("cscope")
-    " 0 = check cscope for definition of a symbol before checking ctags: 
-    " 1 = check ctags for definition of a symbol before checking cscope: 
-    set csto=0
-   
-	" search cscope database as well as the tag file
-	set cst
-
     " instead of showing cscope results in the current window
     " put them in the quickfix window then use :cn :cp to jump
     " :cl to see all and :cc [nr] to jump to [nr]
@@ -240,16 +239,6 @@ if has ("cscope")
 
     " use both cscope and ctag for 'ctrl-]', ':ta', and 'vim -t'
     set cscopetag
-
-	set nocsverb
-	" add any database in current directory
-	if filereadable("cscope.out")
-		cs add cscope.out
-	" else add database pointed to by environment
-	elseif $CSCOPE_DB != ""
-		cs add $CSCOPE_DB
-	endif
-	set csverb
 
     "hit 'CTRL-\', followed by one of the cscope search types above (s,g,c,t,e,f,i,d)
     nmap <C-\>s :cs find s <C-R>=expand("<cword>")<CR><CR>  
@@ -355,4 +344,13 @@ let g:tagbar_autoclose = 1
 let g:netrw_preview   = 1
 let g:netrw_liststyle = 3
 let g:netrw_winsize   = 30
+
+
+" ------------------------------------------------
+" Gtags
+" ------------------------------------------------
+set csprg=gtags-cscope
+cs add GTAGS
+
+
 
