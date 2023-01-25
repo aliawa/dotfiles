@@ -1,0 +1,549 @@
+# ---------------------------------------------
+# Diagnostic tools
+# ---------------------------------------------
+ping                |  Ping for IPv4        
+ping6               |  Ping for IPv6       
+traceroute -4       |  Traceroute for IPv4 
+traceroute -6       |  Traceroute for IPv6 
+arp -an             |  IPv4 arp table      
+ip -6 neighbor show |  IPv6 ndp table      
+nmap                |  Network port scanner
+
+
+# Ping an address even if there is no route to it
+arping -i eth3 11.100.1.134
+
+
+# ----------------------
+# ip address
+# ----------------------
+
+# show
+ip a s 
+ip a s up
+ip a s label eth*
+
+# add
+ip a a 192.168.30.30 dev eth0
+
+# del 
+ip a d 192.168.20.1 dev eth0
+
+
+# ----------------------
+# ip route
+# ----------------------
+
+# show (fmly is -6 or -4, default:-4)
+ip [fmly] r s
+ip [fmly] r | column -t
+
+# add
+ip r a 192.168.20.0/24 dev eth0
+
+# static throug a router
+ip r a to <addr> via <router_addr> dev eth0
+
+# default route (special prefix:"default" equivalent to ipv4 0/0 and ipv6 ::/0
+ip r a default via <addr> dev eth1
+
+# replace
+ip r r 192.168.20.0/24 dev eth0 src 192.168.20.20
+
+# routing rules
+ip route list
+ip route list all
+ip route list table all
+ip route list table 6
+
+
+
+# ----------------------
+# ip neighbor
+# ----------------------
+
+# Adding arp entry
+ip neigh add to <addr_of_neigh> dev eth1 lladdr <HW_addr_neigh> nud reachable
+
+
+# ----------------------
+# ip link
+# ----------------------
+
+# set
+ip l set eth1 up
+
+# show
+ip l show
+
+# create a veth pair.
+# it works like a patch cable, each end can be in a different namespace
+ip link add v-eth1 type veth peer name v-peer1
+
+
+# -------------------------
+# ip rule (policy routing)
+# -------------------------
+
+# see all tables
+ip rule list
+
+# view main table
+ip route list table main
+
+# add a new table called John
+echo 200 John >> /etc/iproute2/rt_table
+ip rule add from 10.0.0.10 table john
+
+# rule for John's table
+ip route add default via 195.96.98.253
+
+
+
+# -------------------------
+# ip netns 
+# -------------------------
+
+# create/delete namespace
+ip netns add <name>
+ip netns del <name>
+
+#list all
+ip netns list (or just ip netns)
+
+
+# add interface to namespace
+ip link set <device> netns <namespace>
+
+# show interfaces in namespace
+ip netns exec <namespace> ip link show
+
+# run a command in a given namespace
+ip netns exec <name> <command>
+
+# configure interface in new namespace
+ip netns exec <name> ip link set lo up
+ip netns exec <name> ip link set ens256 up
+ip netns exec myns ip a a 100.10.0.2/24 dev ens256
+ip netns exec myns ip route add default via 100.10.0.2
+
+# start ssh daemon in new namespce
+ip netns exec <name> /usr/sbin/sshd -o PidFile=/run/sshd-<name>.pid
+
+# show all process id's in a given namespace
+ip netns pids <name>
+
+# show the namespace of a given process id
+ip netns identify <pid>
+
+# move interface back to default namespace (1)
+ip netns exec <namespace> ip link set eth5 netns 1
+
+
+
+
+# changing host name
+# ------------------
+hostname:
+    hostnamectl set-hostname xps2.ewn
+    
+check:
+     uname -n
+     hostname
+     cat /proc/sys/kernel/hostname
+     cat /etc/hostname
+     hostnamectl status
+
+
+
+
+
+# netstat: listening services
+# ---------------------------
+states:
+  netstat -tpna
+  netstat -upna
+  netstat -pna --inet # UDP,TCP,RAW
+
+protocol statistics:
+  netstat -aps
+
+routing table:
+  netstat -r
+
+interfaces:
+  netstat -i 
+
+
+
+# Interface tools
+# ----------------
+ethtool -p eth0 15  : Blink eth0 for 15 seconds
+ethtool -S eth0 ... : Change setting on eth0
+
+mii-tool eth0    # old tool
+
+# List all interfaces
+ls /sys/class/net
+
+# configuring interfaces on ubuntu
+/etc/network/interfaces
+
+# restart all interfaces 
+# For Servers:
+sudo ifdown --exclude=lo -a && sudo ifup --exclude=lo -a
+# For Desktops
+sudo service network-manager restart
+
+
+# vlans
+# -----
+# create vlan
+ip link add link eth2 name eth0.5 type vlan id 30
+
+# give vlan an ip
+ip a a 192.168.2.1 dev eth0.5
+ip r a 192.168.2.0/24 dev eth0.5
+
+# turn up
+ip link set eth0.5 up
+
+# turn down
+ip link set dev eth0.100 down
+
+# delete
+ip link delete eth0.100
+
+
+# old method
+vconfig add eth0 5 # create VLAN-ID 5 on eth0
+vconfig rem eth0.5 # delete 
+
+NTP
+-----------
+# configure
+/etc/ntp.conf
+# start
+sudo /etc/init.d/ntp restart
+
+
+# -------------------------------------------------------------
+#                               DHCP 
+# -------------------------------------------------------------
+
+# Renew lease (-v = verbose)
+sudo dhclient -v -r eth2  
+sudo dhclient -v eth2
+
+
+# ---                    --- #
+# --- setting up dnsmasq --- #
+# ---                    --- #
+
+# dnsmasq features:
+DHCP server
+DNS server
+TFTP server
+
+# config file: 
+/etc/dnsmasq.conf
+/etc/default/dnsmasq
+# dnsmasq directly uses the following files:
+/etc/hosts
+/etc/resolv.conf
+
+
+# start (fedora)
+sudo service dnsmasq restart
+sudo chkconfig dnsmasq on
+
+# Add all local hosts to /etc/hosts
+192.168.1.12 xps 
+
+# Add upstream dns servers to /etc/resolv.conf
+nameserver 8.8.8.8
+
+# Prevent NetworkManager from overwriting /etc/resolv.conf
+# Add under [main] in /etc/NetworkManager/NetworkManager.conf
+dns=none
+
+# Make dsnmasq go to local server for local addresses
+server=/ewn.local/10.10.22.31
+
+# restart
+service dnsmasq restart
+
+
+#
+# ----                         ---- #
+# ---- Ubuntu Isc-dhcp-server  ---- #
+# ----                         ---- #
+#
+# Note that currently, the ISC DHCP server can only serve IPv4 or IPv6, 
+# means you have to start the daemon twice (for IPv6 with option “-6”) 
+# to support both protocols.
+# Resource: http://www.buntschu.ch/blog/?p=344
+
+# config file: name is important because hard-coded in /etc/init/isc-dhcp-server
+/etc/dhcp/dhcpd.conf  # for ipv4
+/etc/dhcp/dhcpd6.conf # for ipv6
+
+# select interfaces:
+/etc/default/isc-dhcp-server
+
+# create new startup script for ipv6
+# add "-6" to dhcpd options in isc-dhcp6-server
+# change dhcpd to dhcpd6
+cp /etc/init.d/isc-dhcp-server /etc/init.d/isc-dhcp6-server
+cp /etc/init/isc-dhcp-server.conf /etc/init/isc-dhcp6-server.conf
+sudo systemctl daemon-reload
+
+# create leases file if it does not exit
+touch /var/lib/dhcpd/dhcpd.leases
+touch /var/lib/dhcpd/dhcpd6.leases
+
+# Test config file
+dhcpd -6 -d -cf /etc/dhcp/dhcpd6.conf -lf /var/lib/dhcp/dhcpd6.leases eth2
+dhcpd -4 -d -cf /etc/dhcp/dhcpd.conf -lf /var/lib/dhcp/dhcpd.leases eth2
+
+# Turn off apparmour because it creates problems with dhcpd.leases file
+aa-complain dhcpd
+
+# Start
+sudo systemctl start isc-dhcp-server
+sudo systemctl start isc-dhcp6-server
+
+# Check status
+systemctl status isc-dhcp-server.service
+systemctl status isc-dhcp6-server.service
+
+# Check leases
+cat /var/lib/dhcp/dhcpd.leases
+cat /var/lib/dhcp/dhcpd6.leases
+
+# Troubleshooting
+systemctl list-units --type=service
+journalctl -xe
+sudo cat /var/log/syslog
+
+
+
+BIND
+-------------
+# configure named
+/etc/bind/named.conf.options
+/etc/bind/named.conf.local
+/etc/bind/dp.voip.lab
+# Start named (bind)
+sudo /etc/init.d/bind9 restart
+
+
+NTP
+-------------
+# configure
+/etc/ntp.conf
+# start (ubuntu)
+/etc/init.d/ntp start
+
+
+
+port forwarding
+------------------
+# 1. check if forwarding is enabled:
+sysctl net.ipv4.conf.eth0.forwarding
+cat /proc/sys/net/ipv4/ip_forward
+
+# 2. Enable forwarding
+sysctl -w net.ipv4.conf.eth0.forwarding=1
+
+echo 1 > /proc/sys/net/ipv4/ip_forward              # temporary
+vi /etc/sysctl.conf, change net.ipv4.ip_forward=1   # permanent
+
+also:
+    sysctl net.ipv4.ip_forward=1
+    sysctl -p
+
+
+
+# 3. NAT rule 
+iptables -t nat -A PREROUTING -p tcp  -d 192.168.1.250 --dport 8001 -j DNAT \
+        --to 192.168.50.10:80
+
+# 4. Filter rule (eth0+ = All interfaces with names begining with eth0)
+iptables -I FORWARD 3 -p tcp -i eth0+ -o eth0+ --dport 80 -m state \
+        --state NEW,ESTABLISHED,RELATED -j ACCEPT
+
+# 5. NOTES: You may need a rule for https (port 443)
+#    When traffic is forwarded by DNAT rule the source address is not changed.
+#    For example B forwards the traffic to C
+#    A ----> B ----> C
+#    C will get packets with source address of A. If B is the default router for
+#    C then it will send everything to B and B will forward them to A. If this is
+#    not the case then we will need to tell C that the next-hop for sending packets
+#    to A is B.
+#
+
+
+# ----------------------
+# ARP
+# ----------------------
+
+# add static arp entry
+arp -s 10.0.0.2 00:0c:29:c0:94:bf 
+
+# delete static arp entry
+sudo arp -d 10.0.0.2
+
+
+
+Disable Ipv6
+-------------------------------------
+sudo sysctl -w net.ipv6.conf.all.disable_ipv6=1
+sudo sysctl -w net.ipv6.conf.default.disable_ipv6=1
+sudo sysctl -w net.ipv6.conf.lo.disable_ipv6=1
+
+
+Ubuntu DNS Server
+-------------------------------------
+sudo vi /etc/netplan/50-cloud-init.yaml             # edit config file
+sudo netplan --debug apply                          # apply changes
+systemd-resolve --status | grep 'DNS Servers' -A2   # check 
+
+systemd-resolved:
+systemd-resolved is the default dns request router on ubuntu it is listning on
+on 127.0.0.53:53. All processes query this instead of sending the request 
+directly to DNS servers. It will decide which interface and which Name server
+to send the request to. It gets all info from network manager, we cannot
+manually configure it.
+
+
+- Show which interface will be used
+    resolvectl domain
+- Show which dnsserver will be used
+    resolvectl dns
+- Show cache
+    sudo pkill -USR1 systemd-resolve
+    sudo journalctl -u systemd-resolved > ~/resolved.txt
+- status
+    resolvectl status
+
+
+# Disable systemd-resolved on Ubuntu
+sudo -e /etc/systemd/resolved.conf
+    [Resolve]
+    DNS=127.0.0.1
+    FallbackDNS=1.0.0.1
+    MulticastDNS=no
+    DNSStubListener=no
+sudo systemctl disable systemd-resolved.service
+sudo systemctl stop systemd-resolved.service
+
+
+# Re-enable systemd-resolved on Ubuntu
+sudo -e /etc/systemd/resolved.conf
+    [Resolve]
+    DNS=127.0.0.1
+    FallbackDNS=1.0.0.1
+    MulticastDNS=no
+    DNSStubListener=no
+
+sudo systemctl enable systemd-resolved.service
+sudo systemctl start systemd-resolved.service
+
+
+
+# Start Unbound
+systemctl start unbound.service
+systemctl enable unbound.service 
+
+# Status: note: sudo is not needed
+systemctl is-active unbound
+systemctl status unbound
+
+# main config file
+/etc/unbound/unbound.conf
+# included configuration files
+/etc/unbound/unbound.conf.d/*.conf
+
+unbound-control status
+unbound-control dump-cache > cache
+
+Who is listning on port 53
+sudo ss -lnptu | grep 53
+
+# Fixing an error when trying to start unbound
+```
+sda: add missing path
+sda: failed to get udev uid: Invalid argument
+sda: failed to get sysfs uid: Invalid argument
+sda: failed to get sgio uid: No such file or directory
+```
+VM option -> Advance -> Configuration Parameter 
+Add Parameter 
+disk.EnableUUID=TRUE
+
+
+A configuration that worked
+server:
+    interface: 10.224.17.56                             # listen on interface 10.224.17.56
+    access-control: 192.168.0.0/16 allow                # clients from this address block will get an answer
+    local-zone: "local.me" static                       # define local zone of type static
+    local-data: "awais.local.me 10800 IN A 10.10.10.10" # data for local zone
+
+Another working
+server:
+    interface: 10.224.17.56
+    access-control: 192.168.0.0/16 allow
+    local-zone: "me.local." static
+    local-data: "awais.me 10800 IN A 10.10.10.10"
+
+
+
+-------------
+Docker
+------------
+stop docker
+sudo snap stop docker
+sudo snap remove docker
+
+install docker
+sudo snap install docker
+
+list interfaces created by docker
+docker network ls
+
+
+ADJUST TCP KERNEL PARAMETERS
+---------------------------------
+net.ipv4.tcp_rmem        TCP receive-window size
+net.ipv4.tcp_wmem        TCP send-window size
+
+sudo sysctl -a | grep tcp.*mem
+net.ipv4.tcp_mem = 93249    124334  186498
+net.ipv4.tcp_rmem = 4096    131072  6291456
+net.ipv4.tcp_wmem = 4096    16384   4194304
+
+sudo sysctl -a | grep core.*mem
+net.core.optmem_max = 20480
+net.core.rmem_default = 212992
+net.core.rmem_max = 212992
+net.core.wmem_default = 212992
+net.core.wmem_max = 212992
+
+RESET to original values
+sudo sysctl -w net.ipv4.tcp_mem='93249 124334 186498'
+sudo sysctl -w net.ipv4.tcp_wmem='4096 16384 4194304'
+sudo sysctl -w net.ipv4.tcp_rmem='4096 131072 6291456'
+sudo sysctl -w net.core.wmem_max=212992
+
+other proposals:
+sudo sysctl -w net.inet.udp.maxdgram=65535
+
+
+
+
+Wireless
+---------------------------------
+# Check for wireless interfaces
+ iwconfig
+

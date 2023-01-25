@@ -1,0 +1,213 @@
+Commands have two parts:
+ ________________________________      __________________
+/            Part 1              \    /     Part 2       \
+iptables <table> <command> <chain>     <match and target> 
+                                                        
+
+# Tables 
+# -------------------------------------------------
+-t filter (default if none specified)
+-t nat
+-t mangle
+-t raw
+
+# Commands
+# -------------------------------------------------
+-A --append 
+-D --delete 
+-I --insert 
+-R --replace 
+-L --list 
+-F --flush 
+-Z --zero 
+-N --new-chain 
+-X --delete-chain 
+-P --policy 
+-E --rename-chain
+
+# Chains
+# -------------------------------------------------
+INPUT OUTPUT FORWARD PREROUTING POSTROUTING <user-defined>
+
+# Targets
+# -------------------------------------------------
+ACCEPT DROP QUEUE RETURN BALANCE CLASSIFY CLUSTERIP CONNMARK CONNSECMARK 
+CONNTRACK DNAT DSCP ECN IPMARK IPV4OPSSTRIP LOG MARK MASQUERADE MIRROR 
+NETMAP NFQUEUE CT REDIRECT REJECT ROUTE SAME SECMARK SET SNAT TARPIT TCPMSS 
+TOS TRACE TTL ULOG XOR
+
+# Match
+# -------------------------------------------------
+-i incoming interface, -o outgoing interface
+-s source ip address, -d destination ip address
+-p protocol, -dport destination port -sport source port
+# specify port range as 0:65535
+
+# Modules (Extentions)
+-m mac –mac-source xx:xx:xx:xx:xx:xx source MAC #note that MAC is layer2
+-m mark –mark abc # match a packet marked with abc
+-m length –length :412 # match all packets with a length of less then 412 Bytes
+-m ttl –ttl-lt 12 -j LOG –log-prefix "IPT TTL<12 "
+-m condition # match a flag changeable from userspace
+-m geoip # match on countries
+-m state --state NEW
+
+# TCP extensions
+# These are available when -p tcp is specified. They do not require -m
+-p tcp --tcp-flags ALL SYN,ACK # Examine all flags SYN and ACK should be set
+
+
+#Examples:
+http://wiki.openwrt.org/doc/howto/netfilter#dokuwiki__top
+
+
+
+# List
+# -------------------------------------------------
+ip6tables -nvL --line-numbers
+ip6tables -nvL INETIN --line-numbers
+
+iptables -t nat -nvL --line-numbers
+iptables -nvxL --line-numbers  # exact number (no rounding)
+
+
+# Insert (Add at front)
+# -------------------------------------------------
+# Redirect DNS queries to self on TCP
+iptables -t nat -A PREROUTING -i $LAN -p tcp --dport 53 -j REDIRECT --to-port 53 
+
+# Insert at line-number
+iptables -I INPUT {LINE_NUMBER} -i eth1 -p tcp --dport 21 -s 12.1.1.1 -j ACCEPT 
+
+
+# Append (Add at the end of the list)
+# -------------------------------------------------
+# Block an ip address
+iptables -A INPUT -s 192.168.0.5 -p TCP -j REJECT 
+
+
+# Delete
+# -------------------------------------------------
+iptables -D OUTPUT 1
+iptables -t nat -D PREROUTING 3
+
+iptables -t nat -X # delete all rules in nat table
+
+
+
+# Zero counters
+# -------------------------------------------------
+iptables -nvZ -L FORWARD
+
+
+
+
+
+# How Packets Traverse The Filters
+# -------------------------------------------------
+
+# MANGLE Table:
+#   Used for specific types of packet alterations.
+# Chains: 
+#   1. PREROUTING -- This chain alters packets received via a network interface
+#      before they are routed.
+#   2. OUTPUT -- This chain alters locally generated packets before they are
+#      routed via a network interface.
+          _________                     _____             __________        
+Incoming /         \                   /     \           /          \   Outgoing
+     -->|PRE-ROUTING|-->[Routing ]--->|FORWARD|-------->|POST-ROUTING|--->
+         \_________/    [Decision]     \_____/       ^   \__________/   
+                            |                        |     
+                            v                       ____
+                           ___                     /    \
+                          /   \                   |OUTPUT|
+                         |INPUT|                   \____/
+                          \___/                      ^ 
+                            |                        |
+                             ----> Local Process ----
+
+
+# NAT Table:
+#   Used to alter packets that create a new connection
+# Chains:
+#   1. PREROUTING - Alters packets received via a network interface when they arrive
+#   2. OUTPUT - Alters locally generated packets before they are routed via a 
+#      network interface.
+#   3. POSTROUTING - Alters packets before they are sent out via a network interface.
+          _________                                       __________        
+Incoming /         \                                     /          \   Outgoing
+     -->|PRE-ROUTING|-->[Routing ]--------------------->|POST-ROUTING|--->
+         \_________/    [Decision]                   ^   \__________/   
+                            |                        |     
+                            |                       ____
+                            |                      /    \
+                            |                     |OUTPUT|
+                            |                      \____/
+                            |                        ^ 
+                            |                        |
+                             ----> Local Process ----
+
+
+# FILTER Table:
+#   Default table for handling network packets
+# Chains:
+#   1. INPUT - Applies to packets received via a network interface.
+#   2. OUTPUT - Applies to packets sent out via tha same network interface which
+#      received the packets.
+#   3. FORWARD - Applies to packts received on one network interface and sent
+#      out on another.
+                                        _____
+Incoming                               /     \                          Outgoing
+     ------------------>[Routing ]--->|FORWARD|-------------------------->
+                        [Decision]     \_____/       ^
+                            |                        |
+                            v                       ____
+                           ___                     /    \
+                          /   \                   |OUTPUT|
+                         |INPUT|                   \____/
+                          \___/                      ^
+                            |                        |
+                             ----> Local Process ----
+
+# NOTE:
+The order of chains processed is: Mangle chains --> NAT chains --> Filter chains                
+
+
+
+
+
+conntrack state
+------------------------------
+cat /proc/net/ip_conntrack
+
+
+
+
+# Complete disable firewall script
+# -------------------------------------------------
+echo "Stopping firewall and allowing everyone..."
+iptables -F                     # Flush filter table
+iptables -X                     # Delete all user-defined chains in FILTER table
+iptables -t nat -F              # Flush NAT table
+iptables -t nat -X              # Delete all user-defined chains in NAT table
+iptables -t mangle -F           # Flush MANGLE table  
+iptables -t mangle -X           # Delete all user-defined chains in MANGLE table
+iptables -t raw -F              # Flush RAW table  
+iptables -t raw -X              # Delete all user-defined chains in RAW table
+iptables -P INPUT ACCEPT
+iptables -P FORWARD ACCEPT
+iptables -P OUTPUT ACCEPT
+
+
+# Modules
+# -------------------------------------------------
+# show loaded modules
+lsmod|grep -E "nf_|xt_|ip"
+cat /proc/net/ip_tables_name
+cat /proc/net/ip_tables_matches
+
+# NATTING
+# -------------------------------------------------
+# when source address is in the network 10.200.1.0/255.255.255.0 change it to 
+# the ip address of the interface eth0
+iptables -t nat -A POSTROUTING -s 10.200.1.0/255.255.255.0 -o eth0 -j MASQUERADE

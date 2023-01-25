@@ -1,0 +1,323 @@
+# -----------------------------
+# Install
+# -----------------------------
+pip3 install scapy-python3
+brew install libdnet
+
+# 
+# -------------------------------
+# Operations on list of packets (PacketList):
+# such as the list returned by sniff(), rdpcap()
+# -------------------------------
+
+COMMAND             EFFECT
+summary()           displays a list of summaries of each packet
+nsummary()          same as previous, with the packet number
+conversations()     displays a graph of conversations
+show()              displays the prefered representation (usually nsummary())
+filter()            returns a packet list filtered with a lambda function
+hexdump()           returns a hexdump of all packets
+hexraw()            returns a hexdump of the Raw layer of all packets
+padding()           returns a hexdump of packets with padding
+nzpadding()         returns a hexdump of packets with non-zero padding
+plot()              plots a lambda function applied to the packet list
+make table()        displays a table according to a lambda function
+pkts[0]             get first packet in list
+len(pkts)           number of packets in the list
+
+# Format summary
+ans.summary( lambda(s,r): r.sprintf("%TCP.sport% \t %TCP.flags%") )
+
+# for loop
+for packet in pkts:
+    if (packet.haslayer(ICMP)):
+        print "ICMP code: " + str(packet.getlayer(ICMP).code)
+
+rx=rdpcap('rx')
+rx.filter(lambda p: TCP in p and (p[TCP].sport == 23495 or p[TCP].dport == 23495))
+
+
+# -------------------------------
+# Operations on single packet
+# -------------------------------
+#
+# Create packet
+pkt=IP()/TCP()/"GET / HTTP/1.0\r\n\r\n"
+
+# See packet
+pkt.show()
+ls(pkt)
+hexdump(pkt)
+pkt.summary()
+
+# convert packet to hex string
+str(pkt) 
+
+# packet fields
+pkt[IP].src
+pkt[UDP].dport
+pkt[TFTP_DATA].block
+pkt[Raw].load               Note: 'Raw' is the layer and 'load' is the field in that layer
+pkt[ICMP].type
+pkt[ICMP].code
+
+# Layers
+pkt[TCP]                    gets TCP and lower layers same as pkt.getLayer(TCP)
+pkt.underlayer              returns IP layer and following layers
+pkt.payload                 returns payload of TCP 
+                            !! Note: This gives wrong result if there is padding in ehternet frame
+                            !! always check "if Raw in pkt:"
+pkt.load.decode('utf8')     payload as normal string
+
+# Check presense of layer
+if IP in pkt
+if TFTP_DATA in pkt
+
+# layer summary
+pkt[ICMP].summary()
+pkt[TFTP_ERROR].summary()
+
+# recreate a sniffed packet
+pkt.command()   # return Scapy command that can generate 'pkt'
+newpkt = eval(pkt.command())
+or newpkt = pkt
+
+# Replace text in the packet payload
+payload = pkt.load.replace("txt", "new-txt")
+pkt.load = payload
+
+# delete checksum, required if you change the ip
+del pkt.chksum
+del pkt[UDP].chksum
+del pkt[TCP].chksum
+
+
+
+
+# -------------------------------
+# sending and receiving
+# -------------------------------
+
+# Sending and Receiving
+# "ans" is list of couples (packet sent, packet received)
+# "unans" is ist of unreplied packet
+ans,unans=sr(IP(dst="www.test.fr/30", ttl=(1,6))/TCP())
+
+# Send and receive single packet
+p=sr1(IP(dst="www.slashdot.org")/ICMP()/"XXXXXXXXXXX")
+
+
+# Send packet layer 3: meanining it will using the kernel routing table to
+# select the correct interface and next Layer 2 hop.
+send(IP(dst="1.2.3.4")/ICMP())
+
+
+# Send packet layer 2: meaning we will have to choose the correct interface
+# and link layer protocol (for example Ether)
+sendp(Ether()/IP(dst="1.2.3.4",ttl=(1,4)), iface="eth1")
+
+# Send the same set of packets in a loop (send SYN to port 80)
+srloop(IP(dst="www.target.com/30")/TCP())
+
+
+# Sending TCP
+# Dont let the kernel on local-machine see the syn-ack from target
+# otherwise it will respond with a RST
+iptables -A INPUT -s <target> -j DROP
+
+
+
+
+# -------------------------------
+# sniff
+# -------------------------------
+
+# Sniff
+pkts=sniff(iface="eth1", filter="port sip")
+pkts.nsummary()
+
+# sniff on multiple interfaces
+# sniffed_on gives the interface name eth1 or eth2
+sniff(iface=["eth1","eth2"], prn=lambda x: x.sniffed_on+": "+x.summary())
+
+# Details of third packet
+pkts[3]
+
+# Using Berkley Packet Filter (BPF)
+sniff(iface="eth0", filter="icmp", count=10)
+
+# Sniff and show, prn function to be called for each packet not necessarily print
+sniff(iface="eth1", prn=lambda x: x.show())
+
+# print using sprintf
+# {IP:...} is used for conditional printing. If IP layer is present the print.
+pkts = sniff(prn=lambda x:x.sprintf("{IP:%IP.src% -> %IP.dst%\n}{Raw:%Raw.load%\n}"))
+
+# BPF reference (Berkeley Packet Filter)
+http://biot.com/capstats/bpf.html
+
+a=AsyncSniffer( store=True)
+a.start()
+pktlst = a.stop() # returns scapy.plist.PacketList, len(pktlst) works
+a.results.summary()
+wrpcap("/tmp/write1.pcap",pkts)
+
+
+# -------------------------------
+# pcap 
+# -------------------------------
+
+# Read pcap file
+pkts = rdpcap("/tmp/read1.pcap")
+
+# Write the captured packtes to a pcap files
+wrpcap("/tmp/write1.pcap",pkts)
+
+# Show captured packets in wireshark
+wireshark(a)
+
+# Replay packets
+pkts=rdpcap(“/tmp/attack.pcap”)
+for pkt in pkts:
+   send(pkt)
+
+for p in PcapReader(file):
+    p.show()
+
+s = PcapReader(file)
+while 1:
+    s.recv(pkt)
+
+# append=True: append packets to the capture file instead of truncating it
+# sync=True:   do not bufferize wirtes to the capture file
+# gz=True:     compress the capture on the fly
+# PcapWriter.write() can take a single packet or a list of packets
+
+writer = PcapWriter(file_name, append=True)
+writer.write(pkt) 
+
+
+# -------------------------------
+# Routing
+# -------------------------------
+
+# Show internal routing table
+conf.route
+
+# delete route
+conf.route.delt(net="0.0.0.0/0",gw="192.168.8.1")
+
+# Add route to net
+conf.route.add(net="0.0.0.0/0",gw="192.168.8.254")
+
+# Add route to host
+conf.route.add(host="192.168.1.1",gw="192.168.8.1")
+
+# Reload system routing table, Overwrite local changes)
+conf.route.resync()
+
+# Interface address
+get_if_list()                       --> ['eth2', 'lo', 'eth0', 'eth1']
+get_if_addr('ens192')               --> '10.0.0.1'
+get_if_hwaddr('ens192')             --> '00:50:56:9c:03:c7'
+getmacbyip("10.0.0.1")              --> 'f3:ae:5e:76:31:9b'
+conf.route.route("0.0.0.0")[2]      --> '10.0.0.1' (default router)
+
+# input '00:50:56:9c:03:c7' -> output: 'eth1'
+hw2name = { get_if_hwaddr(x):x for x in iflst }
+def getHwName(hw):
+    if hw in self.hw2name:
+        return hw2name[hw]
+    else:
+        return "??"
+
+# -------------------------------
+# Getting information
+# -------------------------------
+
+# all available protocols (or layers)
+ls()
+
+# all available protocol fields
+ls(ARP)
+
+# all scapy commands
+lsc()
+
+# get function parameters
+import inspect
+inspect.getargspec(srflood)
+
+# function help
+help(srflood)
+print (sr1.__doc__)
+
+# All configuration options
+conf
+
+# -------------------------------
+# Protocols
+# -------------------------------
+Ether:
+    src
+    dst
+IP:
+    src
+    dst
+UDP:
+    sport
+    dport
+TCP:
+    sport
+    dport
+    flags (S,SA,PA,A) 
+Raw:
+    load
+
+# Binding layers
+bind_layers (TCP, HTTP, sport=80 )
+
+
+
+
+
+# -------------------------------
+# Code
+# -------------------------------
+sniff, bridge_and_sniff
+/usr/local/lib/python3.5/dist-packages/scapy/sendrecv.py
+
+route:
+/usr/local/lib/python3.5/dist-packages/scapy/route.py
+
+dpkg --listfiles python3-scapy | less
+
+
+python -m pip list
+python -m pip show scapy
+python -m pip show --files scapy
+
+PacketList
+    parent _PacketList
+        contains list
+
+
+# -------------------------------
+# Scripting
+# -------------------------------
+
+# turn off logging
+import logging
+logging.getLogger("scapy").setLevel(logging.CRITICAL)
+
+# turn off "Sent 1 packets." output from "sendp"
+conf.verb=0
+
+TCP flags
+-------------------
+if (pkt[TCP].flags & 0x02): pass    checking for SYN
+if (pkt[TCP].flags.S): pass         another check for SYN
+print(pkt.sprintf('%TCP.flags%'))   print the packet flags
+
+
+

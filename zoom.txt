@@ -1,0 +1,2 @@
+Start or join a Zoom meeting directly from your Slack channel by using the "/zoom" slash command.
+Start a phone call directly from your Slack channel by using the "/zoom call [@contact/phone number]" slash command.

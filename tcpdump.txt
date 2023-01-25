@@ -1,0 +1,67 @@
+# vim: set filetype=conf :
+
+# BPF use man pcap-filter
+    'port 5060 or 53'                  # use of OR
+    'tcp[13]  == 2'                    # SYN packets
+    'tcp[13] & 2 == 2'                 # packets with SYN bit set along with any other bit
+    'tcp[tcpflags] & tcp-push  != 0'   # tcp-fin, tcp-syn, tcp-rst, tcp-act, tcp-urg
+
+
+# converting a hex dump to pcap
+  1. capture hex dump
+     sudo tcpdump -i eth0 -txxl -s0 port 5060| tee dat.dump
+
+  2. convert to a format the text2pcap can understand
+      cat dat.dump | sed 's/ \([0-9a-f][0-9a-f]\)\([0-9a-f][0-9a-f]\)/ \1 \2/g' > dat1.dump
+      cat dat1.dump | sed 's/0x\(....\):/\1/' > dat2.dump
+      cat dat2.dump | sed  's/^IP .*$/ /' > dat3.dump
+
+  3. use text2pcap
+     text2pcap dat3.dump dat.pcap
+
+
+
+# Live capture options
+  -D : List interfaces
+  -l : Line buffered, Useful if you want to see the data while capturing it. E.g., 
+       tcpdump  -l  |  tee dat 
+       tcpdump  -l   > dat  &  tail  -f  dat
+  -v : See packet details for example see the complete SIP packets
+  -e : Show ethernet address (link level header)
+  -s <num> : snap length 0=unlimited 
+  -x : print data in hex
+  -A : print data in ASCII
+  -X : print data in hex and ascii
+  -q : quiet output. Print less protocol information so output lines are shorter. 
+  -c : Exit after receiving count packets. 
+
+# Options related to dump file rotation
+  -C <file-size-in-MB> : create new file (file1, file2 ...) after size reached
+  -G <seconds>         : rotate file after rotate-seconds
+  -W <number>          : Limit the number of files created 
+  -z <command>         : Run command at each rotation.
+  
+# Write to file options
+  -U : Don't buffer more than one packet
+  -w <filename> : write to file
+
+# Reading from file options
+  -e            : show ethernet header
+  -r <filename> : read from file 'filename'
+  -c <number>   : exit after printing 'number' packets 
+  -x            : Print the data of the packet in hex
+  -A            : Print the data of the packet in ASCII
+  -#            : Print packet number
+  -t            : don't print timestamp
+  -tt           : delta from previous line
+  -v            : more verbose output (shows ip.id, sip packets as ascii)
+
+
+  
+
+
+
+
+
+
+

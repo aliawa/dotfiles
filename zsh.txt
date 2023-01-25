@@ -1,0 +1,9 @@
+Expansion modifiers
+
+name="John Doe"
+echo ${name:l}
+john doe
+echo ${name:u}
+JOHN DOE
+
+

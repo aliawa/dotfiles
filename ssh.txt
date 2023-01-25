@@ -1,0 +1,268 @@
+# --------------------------------------
+# Setting up password less ssh login
+# --------------------------------------
+# 1:
+# Generate private and public key pair: private key is in ~/.ssh/id_rsa
+# and public is in ~/.ssh/id_rsa.pub.
+# Note: make sure private key file is only readalbe by owner, otherwise it
+# will not work.
+ssh-keygen  
+# if ~/.ssh is not accessable, for example EdgeMarc, the keys can be generated
+# in other location.
+ssh-keygen -f /var/id_rsa
+# Or ~/.ssh can be mounted as tmpfs
+mount -t tmpfs tmpfs /.ssh -o size=1M
+
+# 2: 
+# Now copy the public key to the server where we wand to do paswordless ssh
+cat ~/.ssh/id_rsa.pub | ssh aawais@10.1.5.184 "umask 0077; mkdir -p ~/.ssh; cat >> ~/.ssh/authorized_keys"
+# Or use ssh-copy-id (not available everywhere)
+ssh-copy-id aawais@lin.ewn
+
+# 3:
+# Tell ssh-agent about the newly created private/public keys. if no file is
+# give ~/.ssh/id_rsa is assumed.
+ssh-add [file ...]
+
+# 4: 
+# Do step 2 for every server you want to ssh to.
+
+# 5: 
+# ssh will work now. If you want to use a specific identity file (private key)
+# use the -i option
+ssh -i /var/id_rsa -o StrictHostKeyChecking=no aawais@192.168.1.193
+
+
+
+# --------------------------------------
+# basic
+# --------------------------------------
+
+Debug: -v , -vv, -vvv
+Permissions on private key:     chmod 600 ~/.ssh/id_?sa
+Permissions on authorized keys: chmod 644 ~/.ssh/authorized_keys
+
+
+
+
+# --------------------------------------
+# ssh tunnel
+# --------------------------------------
+
+# ssh to C through B  (Local ---> Jumphost ---> Remote)
+# Execute on Local
+ssh -J user@jumphost fred@remote
+
+
+Reverse ssh tunnel
+--------------------
+# You can ssh from local to remote, but not from Remote to local
+# Local -----> Remote
+#       <--x--
+
+# on Local
+ssh -R 43022:localhost:22 fred@remote
+
+# after that to connect to local from romote, run on remote
+ssh localhost -p 43022  <<-- success
+
+
+
+
+
+
+Local port forwarding (-L)
+---------------------------
+# Case 1: target is different from gateway
+Execute on local-host:
+ssh -L <local-port>:<target-host>:<target-port> <gateway-computer>
+
+[local-port] =======> [gateway-computer] ======> [target-host]:[target-port]
+
+result: All connections to local-host:local-port will be routed to
+target-host:target-port through gateway-computer. The target-host will be 
+resolved on the gateway itself.
+
+
+
+## Case 2: target is on the gateway itself. e.g. server on gateway listening
+on 127.0.0.1
+
+ssh -L <local-port>:localhost:<target-port> <gateway-computer>
+
+[local-port] =======> [gateway-computer] ======> [gateway-computer]:[target-port]
+
+
+
+Remote port forwarding (-R) aka inbound tunnelling
+--------------------------------------------------
+## Case 1: target is different from local-host
+Execute on local-host:
+ssh -R <remote-port>:<target-host>:<target-port> <remote-host>
+
+[target-host]:[target-port] <==== [local-host] <===== [remote-host]:[remote-port]
+
+result: All connections to remote-host:remote-port will be routed to
+target-host:target-port through local-host.
+
+
+## Case 2: target is on localhost itself. e.g. server on localhost listening
+on 127.0.0.1. Gateway is publicy accessible machine.
+
+ssh -R <local-port>:localhost:<gateway-port>  <gateway-computer>
+
+[local-host]:[local-port] <==== [gateway]:[gateway-port] <===== [ some remote host]
+
+
+
+Useful options (-nNT -f)
+---------------------------
+-N  Don't start shell on gateway-computer. Everytime we ssh to some machine
+    and don't specify a command the ssh will run the shell by default. This
+    option will prevent that 
+-T  There is not Pseudo-terminal so don't send prompts.
+-f  go into background after the tunnel is setup.
+-n  Redirect stdin from /dev/null
+
+*:<local-port>  listen on all interfaces, not just localhost.
+
+
+
+# --------------------------------------
+# ssh debugging public key authentication
+# --------------------------------------
+
+# Get more debug info from ssh client
+ssh chuyeow@remotehost -v -v -v
+
+# Debugging the server side 
+# start server in debug mode and then connect to port 2222
+/usr/sbin/sshd -d -p 2222
+
+# Check Authentication log file
+tail -f /var/log/auth.log
+
+# Make sure ssh key agent is running
+ps aux|grep ssh-agent
+
+# Make sure your private key is added to the ssh key agent
+ssh-add -l
+
+# check permissions
+stat -c "%a %n" ~ ~/.ssh ~/.ssh/authorized_keys
+700 /home/aawais
+700 /home/aawais/.ssh
+600 /home/aawais/.ssh/authorized_keys
+
+# check sshd config
+/etc/ssh/sshd_config
+
+
+
+
+# --------------------------------------
+# keep session alive
+# --------------------------------------
+
+# Add to ~/.ssh/config
+Host *
+  ServerAliveInterval 240
+
+# Add to connection string
+-o ServerAliveInterval=60
+
+
+
+# -----------------------------------------------
+# Selectively forward X11 due to securty concerns
+# -----------------------------------------------
+# Add to ~/.ssh/config
+Host capek
+     Hostname capek.stanford.edu
+     User teichman
+     ForwardX11 yes
+     ForwardX11Trusted yes
+
+Host *
+     ForwardX11 no
+     ForwardAgent no
+
+
+# -----------------------------------------------
+# Fix X11 Forwarding in tmux
+# -----------------------------------------------
+# can be automated: http://alexteichman.com/octo/blog/2014/01/01/x11-forwarding-and-terminal-multiplexers/
+# Before attaching to tmux
+echo $DISPLAY > ~/.display.txt
+
+# Before running command requiring X11
+export DISPLAY=`cat ~/.display.txt`
+
+# Enable X11 forwarding when using sudo
+# run on local machine
+xhost +
+
+
+
+# -----------------------------------------------
+# Run commands on remote
+# -----------------------------------------------
+
+# basic
+ssh user@hostB "ls -la"
+
+# Using remote env variables: must be escaped
+user@host> ssh user2@host2 "echo \$HOME"
+
+# run a local script on remote
+ssh root@MachineB 'bash -s' < local_script.sh
+
+# run here document on remote: note escaped heredoc
+ssh user@host <<'ENDSSH'
+... <<< commands to run on remote host
+ENDSSH
+
+# The -t option in the ssh -t command force pseudo-tty allocation.
+# this is needed when we need to run screen based command on the 
+# remote, like vim, htop etc.
+ssh -t user@remote vim [file]
+ssh -t user@remote htop
+ssh -t user@remote "sudo command"
+
+# pipe remote commands
+ssh root@my-server.com -- cat /var/log/secure | tee secure.log | wc -l
+
+
+
+# -----------------------------------------------
+# Slow ssh connection
+# -----------------------------------------------
+/etc/ssh/sshd_config
+UseDNS no
+UsePAM no
+service sshd restart
+
+
+# -----------------------------------------------
+# Multiplexing SSH
+# -----------------------------------------------
+# Reuse a single TCP connection for multiple concurrent SSH sessions.
+
+# First establish the control master
+# Location of control socket is "~/.ssh/controlmasters"
+# Name of control socket is "a"
+ssh -MS ~/.ssh/controlmasters/a user@remote.server
+
+# Subsequent multiplexed connection using option "-S"
+ssh -S ~/.ssh/controlmasters/a user@remote.server
+
+# The control socket name can be made unique automatically
+# %r=remote user, %h=remote host, %p=remote hosts's port
+# This will create a control socket with name: "user@remote.server:22"
+ssh -MS ~/.ssh/controlmasters/%r@%h:%p user@remote.server
+
+# Stop multiplexing
+ssh -O stop -S ~/.ssh/controlmasters/%C user@remote.server
+
+
+
