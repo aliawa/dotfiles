@@ -23,6 +23,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'andymass/vim-matchup'
     Plug 'vim-scripts/gtags.vim'
     Plug 'tpope/vim-fugitive'
+    Plug 'chrisbra/csv.vim'
 call plug#end()
 
 
@@ -250,6 +251,25 @@ endif
 
 
 " ------------------------------------------------
+" From :h using-xxd
+" vim -b : edit binary using xxd-format!
+" Changes should be made on the left-hand side of the display (the hex numbers), 
+" changes to the right-hand side (printable representation) are ignored on write.
+" ------------------------------------------------
+augroup Binary
+  au!
+  au BufReadPre  *.bin let &bin=1
+  au BufReadPost *.bin if &bin | %!xxd
+  au BufReadPost *.bin set ft=xxd | endif
+  au BufWritePre *.bin if &bin | %!xxd -r
+  au BufWritePre *.bin endif
+  au BufWritePost *.bin if &bin | %!xxd
+  au BufWritePost *.bin set nomod | endif
+augroup END
+
+
+
+" ------------------------------------------------
 " My commands
 " ------------------------------------------------
 
@@ -304,7 +324,24 @@ function! Add_offset(start)
         let offst = offst + strdisplaywidth(line)
     endfor
 endfunction
-        
+
+
+"
+" Replace conflicting flow in the line 'Duplicate flows detected ...'
+" with session-id(0/1), where 0 means c2s and 1 s2c
+"
+function! Explain_dupflow()
+    %s#\(Duplicate flows detected while inserting \d\+, flow\) \(\d\+\) \(.*$\)#\=printf("%s %d(%d) %s", submatch(1),submatch(2)/2,submatch(2)%2,submatch(3))#
+endfunction
+
+
+
+" ------------------------------------------------
+" Optional packages
+" ------------------------------------------------
+" machit.vim is found under '/usr/local/Cellar/macvim/9.0.0065/MacVim.app/Contents/Resources/vim/runtime/macros'
+" check with :set runtimepath
+packadd! matchit
 
 " ------------------------------------------------
 " Lightline
