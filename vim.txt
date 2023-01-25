@@ -1031,6 +1031,7 @@ gb              go back to previous directory
 gn              go to directory under cursor
 :NTree [dir]    like cd
 gh              show / hide files starting with '.'
+D               delete file
 
 copy file:
 mt <target-dir>
