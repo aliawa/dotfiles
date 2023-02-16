@@ -96,3 +96,9 @@ bldconfig() {
 
 
 alias xsel=$HOME/.junest/bin/xsel
+
+
+
+# ------ RUPA/z ------
+source $HOME/bin/z.sh
+
