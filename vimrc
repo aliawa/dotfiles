@@ -16,7 +16,8 @@ call plug#begin('~/.vim/plugged')
     Plug 'itchyny/lightline.vim'
     Plug 'preservim/tagbar'
     Plug 'vim-scripts/DrawIt'
-    Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+    Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+    Plug 'junegunn/fzf.vim'
     Plug 'altercation/vim-colors-solarized'
     Plug 'godlygeek/tabular'
     Plug 'andymass/vim-matchup'
@@ -175,9 +176,10 @@ inoremap <c-u> <esc>viwUi
 nnoremap <c-u> viwU<esc>
 
 " wrap text
-nnoremap <leader>" viw<esc>a"<esc>bi"<esc>lel
-nnoremap <leader>' viw<esc>a'<esc>bi'<esc>lel
+" must press enter after <leader>" because of confusion with <leader>""
+nnoremap <leader>" viw<esc>a"<esc>bi"<esc>lel  
 noremap <leader>"" <esc>a"<esc>`<i"<esc>lel
+nnoremap <leader>' viw<esc>a'<esc>bi'<esc>lel
 
 " vimrc editing
 nnoremap <leader>ev :split $MYVIMRC<cr>
@@ -187,7 +189,7 @@ nnoremap <leader>sv :source $MYVIMRC<cr>
 nnoremap <leader>pb :execute "rightbelow vsplit " . bufname("#")<cr>
 
 " comment out lines
-noremap <leader>cc :normal I# <cr>
+"noremap <leader>cc :normal I# <cr>
 
 " insert semicolon at the end of line
 nnoremap <leader>; :normal! mqA;<esc>`q <cr>
@@ -220,9 +222,9 @@ augroup END
 
 augroup fileType
     autocmd!
-    autocmd FileType c,cpp,java,scala noremap <buffer> <localleader>c :normal! I// 
-    autocmd FileType sh,ruby,python   noremap <buffer> <localleader>c :normal! I# 
-    autocmd FileType vim              noremap <buffer> <localleader>c :normal! I" 
+    autocmd FileType c,cpp,java,scala noremap <buffer> <localleader>c :normal! I//<CR>
+    autocmd FileType sh,ruby,python   noremap <buffer> <localleader>c :normal! I#<CR>
+    autocmd FileType vim              noremap <buffer> <localleader>c :normal! I"<CR> 
     autocmd Filetype sh               let b:is_bash=1
 augroup END
 
@@ -341,9 +343,9 @@ let g:tagbar_autoclose = 1
 " ------------------------------------------------
 " NETRW
 " ------------------------------------------------
-let g:netrw_preview   = 1
-let g:netrw_liststyle = 3
-let g:netrw_winsize   = 30
+let g:netrw_preview   = 1       " vertical splitting is default for previewing
+let g:netrw_liststyle = 3       " default listing style is tree
+let g:netrw_winsize   = 30      " directory listing will use 30% of available columns
 
 
 " ------------------------------------------------
