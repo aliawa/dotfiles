@@ -188,9 +188,6 @@ nnoremap <leader>sv :source $MYVIMRC<cr>
 "previous buffer
 nnoremap <leader>pb :execute "rightbelow vsplit " . bufname("#")<cr>
 
-" comment out lines
-"noremap <leader>cc :normal I# <cr>
-
 " insert semicolon at the end of line
 nnoremap <leader>; :normal! mqA;<esc>`q <cr>
 
