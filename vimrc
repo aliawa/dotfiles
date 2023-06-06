@@ -12,19 +12,24 @@
 " --------------------------------------------------
 " vim-plug
 " --------------------------------------------------
-call plug#begin('~/.vim/plugged')
-    Plug 'itchyny/lightline.vim'
-    Plug 'preservim/tagbar'
-    Plug 'vim-scripts/DrawIt'
-    Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-    Plug 'junegunn/fzf.vim'
-    Plug 'altercation/vim-colors-solarized'
-    Plug 'godlygeek/tabular'
-    Plug 'andymass/vim-matchup'
-    Plug 'vim-scripts/gtags.vim'
-    Plug 'tpope/vim-fugitive'
-    Plug 'chrisbra/csv.vim'
-call plug#end()
+if ! empty(globpath(&rtp, 'autoload/plug.vim'))
+    call plug#begin('~/.vim/plugged')
+        Plug 'itchyny/lightline.vim'
+        Plug 'preservim/tagbar'
+        Plug 'vim-scripts/DrawIt'
+        Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+        Plug 'altercation/vim-colors-solarized'
+        Plug 'godlygeek/tabular'
+        Plug 'andymass/vim-matchup'
+        Plug 'vim-scripts/gtags.vim'
+        Plug 'tpope/vim-fugitive'
+        Plug 'chrisbra/csv.vim'
+        Plug 'jceb/vim-orgmode'
+        Plug 'inkarkat/vim-SyntaxRange'
+        Plug 'tpope/vim-speeddating'
+    call plug#end()
+else
+endif
 
 
 " --------------------------------------------------
@@ -42,9 +47,14 @@ set ttimeoutlen=100             " timeout on key codes after 10th of a second.
 set guioptions-=T               " No GUI toolbar
 set guioptions+=b               " show bottom scroll bar
 
-" color scheme
-colorscheme solarized
-set background=dark
+" Load color scheme, do nothing if colorscheme not present
+try
+    colorscheme solarized
+    set background=dark
+catch 
+endtry
+
+" Make the size of splits equal when window is resized
 augroup autoUI
     autocmd!
     autocmd VimResized * wincmd =  " auto splits equilzation
@@ -193,9 +203,8 @@ nnoremap <leader>pb :execute "rightbelow vsplit " . bufname("#")<cr>
 nnoremap <leader>; :normal! mqA;<esc>`q <cr>
 
 
-" map ha 'hex address' convert lines of the form 'addr-451ab906-95e2' to 'addr-69.26.185.6-38370'
-nnoremap <leader>ha :s/addr-\(..\)\(..\)\(..\)\(..\)-\([a-f0-9]\{3,4\}\)/\=printf("addr-%d.%d.%d.%d-%d",str2nr(submatch(1),16), str2nr(submatch(2),16),str2nr(submatch(3),16),str2nr(submatch (4),16),str2nr(submatch(5),16))/ <CR><CR>
-
+" draw a 70 character long divider
+nnoremap <leader>br o<esc>70i-<esc>j0
 
 " ------------------------------------------------
 " Abbreviations
@@ -270,7 +279,7 @@ augroup END
 
 
 " ------------------------------------------------
-" My commands
+" PAN commands
 " ------------------------------------------------
 
 function! Appinfofix()
@@ -288,27 +297,8 @@ function! Appinfofix()
     endwhile
 endfunction
 
-
-function! Scratch()
-    exec winheight(0)/4."split"
-    noswapfile enew                 "noswapfile {command}, run command without creating a swapfile
-    setlocal buftype=nowrite
-    setlocal bufhidden=wipe
-    setlocal buftype=nofile
-    file __scratch__                "set name of current file
-endfunction
-
-function! Ref(file)
-    exec winheight(0)/5."split".a:file
-endfunction
-
-
-
-" diff between current buffer and the file it was opened from
-if !exists(":DiffOrig")
-    command DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis
-                \ | wincmd p | diffthis
-endif
+" map ha 'hex address' convert lines of the form 'addr-451ab906-95e2' to 'addr-69.26.185.6-38370'
+nnoremap <leader>ha :s/addr-\(..\)\(..\)\(..\)\(..\)-\([a-f0-9]\{3,4\}\)/\=printf("addr-%d.%d.%d.%d-%d",str2nr(submatch(1),16), str2nr(submatch(2),16),str2nr(submatch(3),16),str2nr(submatch (4),16),str2nr(submatch(5),16))/ <CR><CR>
 
 
 " Adds offsets to SIP:Received output in packetdiag log.
@@ -330,9 +320,32 @@ endfunction
 " Replace conflicting flow in the line 'Duplicate flows detected ...'
 " with session-id(0/1), where 0 means c2s and 1 s2c
 "
-function! Explain_dupflow()
-    %s#\(Duplicate flows detected while inserting \d\+, flow\) \(\d\+\) \(.*$\)#\=printf("%s %d(%d) %s", submatch(1),submatch(2)/2,submatch(2)%2,submatch(3))#
+nnoremap <leader>df :%s#\(Duplicate flows detected while inserting \d\+, flow\) \(\d\+\) \(.*$\)#\=printf("%s %d(%d) %s", submatch(1),submatch(2)/2,submatch(2)%2,submatch(3))#
+
+" ------------------------------------------------
+" My commands
+" ------------------------------------------------
+
+function! Scratch()
+    exec winheight(0)/4."split"
+    noswapfile enew                 "noswapfile {command}, run command without creating a swapfile
+    setlocal buftype=nowrite
+    setlocal bufhidden=wipe
+    setlocal buftype=nofile
+    file __scratch__                "set name of current file
 endfunction
+
+function! Ref(file)
+    exec winheight(0)/5."split".a:file
+endfunction
+
+
+" diff between current buffer and the file it was opened from
+if !exists(":DiffOrig")
+    command DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis
+                \ | wincmd p | diffthis
+endif
+
 
 
 
@@ -347,44 +360,49 @@ packadd! matchit
 " Lightline
 " ------------------------------------------------
 " Requires: tagbar, set laststatus=2, powerline fonts provided by iterm2
-
-set laststatus=2
-let g:lightline = {
-      \ 'colorscheme': 'wombat',
-      \ 'active': {
-      \   'left': [ [ 'mode', 'paste' ],
-      \             [ 'readonly', 'filename', 'modified', 'tagbar' ] ],
-      \   'right': [ [ 'lineinfo' ], [ 'percent' ], ['byteofset'], ['charvalhex']  ] 
-      \ },
-      \ 'component': {
-      \     'tagbar': '%{tagbar#currenttag("%s", "", "f")}', 'charvalhex': '0x%B', 'byteofset':'%o'
-      \ },
-      \ 'separator': { 'left': '', 'right': '' },
-      \ 'subseparator': { 'left': '', 'right': '' }
-      \ }
-
-
+"if exists("g:plugs") && has_key(plugs, 'lightline')
+    set laststatus=2
+    let g:lightline = {
+          \ 'colorscheme': 'wombat',
+          \ 'active': {
+          \   'left': [ [ 'mode', 'paste' ],
+          \             [ 'readonly', 'filename', 'modified', 'tagbar' ] ],
+          \   'right': [ [ 'lineinfo' ], [ 'percent' ], ['byteofset'], ['charvalhex']  ] 
+          \ },
+          \ 'component': {
+          \     'tagbar': '%{tagbar#currenttag("%s", "", "f")}', 'charvalhex': '0x%B', 'byteofset':'%o'
+          \ },
+          \ 'separator': { 'left': '', 'right': '' },
+          \ 'subseparator': { 'left': '', 'right': '' }
+          \ }
+"endif
 
 
 " ------------------------------------------------
 " Tagbar
 " ------------------------------------------------
-let g:tagbar_autoclose = 1
+if exists("g:plugs") && has_key(plugs, 'tagbar')
+    let g:tagbar_autoclose = 1
+endif
 
 
 " ------------------------------------------------
 " NETRW
 " ------------------------------------------------
-let g:netrw_preview   = 1       " vertical splitting is default for previewing
-let g:netrw_liststyle = 3       " default listing style is tree
-let g:netrw_winsize   = 30      " directory listing will use 30% of available columns
+if exists("g:plugs") && has_key(plugs, 'tagbar')
+    let g:netrw_preview   = 1
+    let g:netrw_liststyle = 3
+    let g:netrw_winsize   = 30
+endif
 
 
 " ------------------------------------------------
 " Gtags
 " ------------------------------------------------
-set csprg=gtags-cscope
-cs add GTAGS
+if exists("g:plugs") && has_key(plugs, 'gtags')
+    set csprg=gtags-cscope
+    cs add GTAGS
+endif
 
 
 
