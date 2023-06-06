@@ -27,6 +27,10 @@ if ! empty(globpath(&rtp, 'autoload/plug.vim'))
         Plug 'jceb/vim-orgmode'
         Plug 'inkarkat/vim-SyntaxRange'
         Plug 'tpope/vim-speeddating'
+        Plug 'ConradIrwin/vim-bracketed-paste'
+        Plug 'will133/vim-dirdiff'
+
+
     call plug#end()
 else
 endif
@@ -202,9 +206,9 @@ nnoremap <leader>pb :execute "rightbelow vsplit " . bufname("#")<cr>
 " insert semicolon at the end of line
 nnoremap <leader>; :normal! mqA;<esc>`q <cr>
 
-
 " draw a 70 character long divider
 nnoremap <leader>br o<esc>70i-<esc>j0
+
 
 " ------------------------------------------------
 " Abbreviations

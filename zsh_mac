@@ -1,7 +1,7 @@
-# $HOME/bin             personal utilities
-# $HOME/pan_bin         pan scripts that are shared across different machines
-# $HOME/pan_scripts     pan scripts used only on worksation (macbook)
-export PATH=$PATH:$PATH:$HOME/bin:$HOME/pan/pan_bin:$HOME/workspace/pan/pan_scripts
+typeset -U path         # make path accept only unique values
+path+=$HOME/bin
+path+=$HOME/pan/pan_bin
+path+=$HOME/pan/pan_scripts
 
 
 # Preferred editor for local and remote sessions
@@ -49,8 +49,9 @@ pyenv() {
 # ------------------------------------------------
 # Get better help for builtins like "read"
 # ------------------------------------------------
-# on macOS run-help is aliased to man, and man read will just display the "builtin" page
-unalias run-help
+# on macOS run-help may be aliased to man, and man read will just display the 
+# "builtin" page. If this the case uncomment the line below
+# unalias run-help
 autoload run-help
 HELPDIR=/usr/share/zsh/5.8.1/help
 alias help=run-help
