@@ -109,7 +109,7 @@ set infercase                   " don't ignore case in completions
 " --------------------------------------------------
 " Clipboard
 " --------------------------------------------------
-set clipboard+=unnamedplus      " share clipboard with X11 clipboard
+set clipboard=unnamedplus      " share clipboard with X11 clipboard
 set clipboard+=unnamed          " share clipboard with windows clipboard
 
 
@@ -140,7 +140,7 @@ nmap <silent> <C-p> :FZF<CR>
 set wildcharm=<C-z>
 nnoremap <leader>b :buffer<Space><C-z>|                             " invoke :buffers and list the available buffers
 nnoremap <Leader>h :cs f f %:t:r.h<CR>|                             " cscope Go to .h file
-nnoremap <Leader>i :cs f f %:t:r.c<CR>|                             " cscope Go to .c file  
+nnoremap <Leader>c :cs f f %:t:r.c<CR>|                             " cscope Go to .c file  
 nnoremap <Leader>f :cs f f |                                        " cscope find file
 nnoremap <Leader>g :cs f g |                                        " cscope find symbol
 nnoremap <Leader>n :set nonumber<CR> :set norelativenumber<CR>|     " disable all numbering
@@ -212,9 +212,7 @@ iabbrev adn  and
 " .sml is not Standard ML
 augroup sml_ft
     autocmd!
-    autocmd BufNewFile,BufRead *.sml
-        \set filetype=c
-        \set syntax=c
+    autocmd BufNewFile,BufRead *.sml set filetype=c syntax=c
 augroup END
 
 augroup fileType

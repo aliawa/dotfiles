@@ -31,7 +31,8 @@
 	co = checkout
 	br = branch
 	ci = commit
-	st = status
+    # adding --no-renames speed up the status command, -b: show branch, -s: short output, -uno: no untracked-files
+	st = status --no-renames -b -s -uno
 	g = grep --break --heading --line-number
 	lg-ascii = log --graph --pretty=format:'%h -%d %s (%cr) <%an>' --abbrev-commit
     lg =log --pretty=format:'%C(auto)%h %C(green)%ad | %C(blue)%<(12,trunc)%an%C(auto)%d %C(reset)%s%d' --graph --date=short
