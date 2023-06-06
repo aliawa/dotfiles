@@ -1,7 +1,0 @@
-
-# NOTE: to specify <bpf filter> an emptyp <match expression> must also be given
-# otherwise ngrep will treat <bpf filter> as a match expression
-
-cat all_pcaps.txt | xargs -i ngrep -I {} -W byline -q "" "src host 192.168.204.139 and dst host 77.120.101.121 and src port 49641 and dst port 61720"
-
-

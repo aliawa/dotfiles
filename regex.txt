@@ -1,6 +1,0 @@
-Terminology:
-----------------------------
-Anchoring: use of ^ or $ to match at begining and end of data
-
-
-

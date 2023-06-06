@@ -1,6 +1,0 @@
-output form character position 32 to the end of line
-cut -c 32-
-
-output field 1, fields are delimited by '#'
-cut -d# -f 1
-
