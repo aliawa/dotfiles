@@ -29,8 +29,6 @@ if ! empty(globpath(&rtp, 'autoload/plug.vim'))
         Plug 'tpope/vim-speeddating'
         Plug 'ConradIrwin/vim-bracketed-paste'
         Plug 'will133/vim-dirdiff'
-
-
     call plug#end()
 else
 endif
@@ -393,17 +391,15 @@ endif
 " ------------------------------------------------
 " NETRW
 " ------------------------------------------------
-if exists("g:plugs") && has_key(plugs, 'tagbar')
-    let g:netrw_preview   = 1
-    let g:netrw_liststyle = 3
-    let g:netrw_winsize   = 30
-endif
+let g:netrw_preview   = 1
+let g:netrw_liststyle = 3
+let g:netrw_winsize   = 30
 
 
 " ------------------------------------------------
 " Gtags
 " ------------------------------------------------
-if exists("g:plugs") && has_key(plugs, 'gtags')
+if exists("g:plugs") && has_key(plugs, 'gtags.vim')
     set csprg=gtags-cscope
     cs add GTAGS
 endif
