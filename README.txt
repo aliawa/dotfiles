@@ -27,4 +27,10 @@ Requirements for tmux_ohmytmux.conf.local
 ----------------------------------------------------------------------
 ln -s ~/dotfiles/tmux_ohmytmux.conf.local .tmux.conf.local
 
+VM setup
+----------------------------------------------------------------------
+ln -s ~/dotfiles/bash_profile .bash_profile
+ln -s ~/dotfiles/bashrc .bashrc
+ln -s ~/dotfiles/tmux_vm.conf .tmux.conf
+
 
