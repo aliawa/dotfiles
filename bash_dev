@@ -1,14 +1,10 @@
 # ------ PAN DEV SERVR ONLY ------
 
-# Local Path. Must call before sourcing /usr/local/env/bashrc
-# otherwise usever will overwrite it
-export PATH=$PATH:$HOME/bin:.:$HOME/pan_bin:$HOME/bin/bin
+# prompt
+export PS1=$'\[\e[35;40m\]\u\[\e[m\]\[\e[40m\]@\[\e[m\]\[\e[33;40m\]\h\[\e[m\]\[\e[40m\]:\[\e[m\]\[\e[32;40m\]\w\[\e[m\] \u00bb '
 
-
-# Source global definitions
-# [ -f /etc/bashrc ] && . /etc/bashrc
-# [ -f /usr/local/env/bashrc ] && . /usr/local/env/bashrc
-[ -f $HOME/pan_bin/common.sh ] && . $HOME/pan_bin/common.sh
+# pan common scripts
+[ -f $HOME/pan_tools/common.sh ] && . $HOME/pan_tools/common.sh
 
 # Perforce
 export P4DIFF=vimdiff
@@ -16,17 +12,13 @@ export P4EDITOR=vim
 export P4USER=$(whoami)
 
 
-# ------ PRIVATE ------
-
-# Local Env
-#export EDITOR=vimx
-
 # Local alias
 alias ptop='cd $PAN_BUILD_DIR/src'
 alias dtop='cd $PAN_BUILD_DIR/src/libs/dp'
 alias makeUT='make PAN_BUILD_TARGETS=test-vm-ut'
 alias makeUTT='make PAN_BUILD_TARGETS=test-vm-ut BUILD_UNIT_TEST=1'
-alias info='info --vi-keys'
+alias xsel=$HOME/.junest/bin/xsel
+
 
 setbranch() {
     # setting the branch is just cd to the directory attached to the branch
@@ -95,10 +87,4 @@ bldconfig() {
 }
 
 
-alias xsel=$HOME/.junest/bin/xsel
-
-
-
-# ------ RUPA/z ------
-source $HOME/bin/z.sh
 
