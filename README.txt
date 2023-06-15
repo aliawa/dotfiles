@@ -23,5 +23,8 @@ Requirements for bash_dev
 $HOME/pan_tools/common.h
 
 
+Requirements for tmux_ohmytmux.conf.local
+----------------------------------------------------------------------
+ln -s ~/dotfiles/tmux_ohmytmux.conf.local .tmux.conf.local
 
 
