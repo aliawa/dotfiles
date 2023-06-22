@@ -22,7 +22,7 @@ addToPath() {
         [[ ":$PATH:" != *":$1:"* ]] && export PATH="$1:${PATH}"
     fi
 }
-addToPath $HOME/pan_bin
+addToPath $HOME/pan_tools
 addToPath $HOME/bin
 export PATH
 

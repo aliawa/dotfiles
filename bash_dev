@@ -1,5 +1,14 @@
 # ------ PAN DEV SERVR ONLY ------
 
+# A function to avoid adding duplicate or non-existent directories to PATH
+addToPath() {
+    if [ -d "$1" ] ; then
+        [[ ":$PATH:" != *":$1:"* ]] && export PATH="${PATH}:$1"
+    fi
+}
+addToPath $HOME/bin/bin # location of gtags
+
+
 # prompt
 export PS1=$'\[\e[35;40m\]\u\[\e[m\]\[\e[40m\]@\[\e[m\]\[\e[33;40m\]\h\[\e[m\]\[\e[40m\]:\[\e[m\]\[\e[32;40m\]\w\[\e[m\] \u00bb '
 

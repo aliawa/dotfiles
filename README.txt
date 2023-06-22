@@ -34,3 +34,8 @@ ln -s ~/dotfiles/bashrc .bashrc
 ln -s ~/dotfiles/tmux_vm.conf .tmux.conf
 
 
+.vimrc
+----------------------------------------------------------------------
+1. gtags in $PATH
+   Ideally installed in ~/Tools
+2. fzf installed at $HOME/Tools/fzf

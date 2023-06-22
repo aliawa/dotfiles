@@ -17,7 +17,8 @@ if ! empty(globpath(&rtp, 'autoload/plug.vim'))
         Plug 'itchyny/lightline.vim'
         Plug 'preservim/tagbar'
         Plug 'vim-scripts/DrawIt'
-        Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+        " Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+        Plug '~/Tools/fzf'
         Plug 'altercation/vim-colors-solarized'
         Plug 'godlygeek/tabular'
         Plug 'andymass/vim-matchup'
