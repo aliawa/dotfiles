@@ -5,11 +5,15 @@ path+=$HOME/pan/pan_scripts
 
 
 # Preferred editor for local and remote sessions
-if [[ -n $SSH_CONNECTION ]]; then
-  export EDITOR='vim'
-else
-  export EDITOR='mvim'
-fi
+#if [[ -n $SSH_CONNECTION ]]; then
+#  export EDITOR='vim'
+#else
+#  export EDITOR='vim'
+#fi
+
+# Let C-xC-e use vim
+VISUAL=vim
+
 
 # ------------------------------------------------
 # iterm2
@@ -131,12 +135,21 @@ command -v fd > /dev/null && export FZF_CTRL_T_COMMAND='fd --type f --type d --h
 # ------------------------------------------------
 # nnn
 # ------------------------------------------------
-alias nnnz='nnn -Rde'
-alias nnn='nnn -d'
-# bookmarks: h takes you to ${HOME}, d takes you to ~/Downloads, see more below
-export NNN_BMS='h:~;d:~/Downloads;n:~/notes;p:~/help'
-export NNN_COLORS="2136"  # use a different color for each context
+# -a auto setup temporay NNN_FIFO
+# -d detail mode
+# -e open text files in $VISUAL
+# -R disable rollover at edges
+alias nnn='nnn -Rde -a'
 
+# Set book marks in the format <key>:<path>
+# export NNN_BMS='h:~;d:~/Downloads;n:~/notes;p:~/help'
+export NNN_BMS=
+
+#plugins
+export NNN_PLUG='p:preview-tui;f:fixname'
+
+# Let nnn use ewrap to open file in tmux split
+export EDITOR=ewrap
 
 
 # ------------------------------------------------
