@@ -17,7 +17,6 @@ if ! empty(globpath(&rtp, 'autoload/plug.vim'))
         Plug 'itchyny/lightline.vim'
         Plug 'preservim/tagbar'
         Plug 'vim-scripts/DrawIt'
-        " Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
         Plug '~/Tools/fzf'
         Plug 'altercation/vim-colors-solarized'
         Plug 'godlygeek/tabular'
@@ -52,8 +51,11 @@ set guioptions+=b               " show bottom scroll bar
 
 " Load color scheme, do nothing if colorscheme not present
 try
-    colorscheme solarized
     set background=dark
+    let g:solarized_termcolors=256
+    let g:solarized_visibility = "high"
+    let g:solarized_contrast = "high"
+    colorscheme solarized
 catch 
 endtry
 

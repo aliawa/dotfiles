@@ -1,3 +1,14 @@
+Common
+----------------------------------------------------------------------
+mkdir ~/Tools
+
+oh-my-tmux
+----------------------------------------------------------------------
+cd ~/Tools
+git clone https://github.com/gpakosz/.tmux.git oh-my-tmux
+ln -s ~/dotfiles/tmux_ohmytmux.conf.local .tmux.conf.local
+
+
 Requirements for bashrc
 ----------------------------------------------------------------------
 1. bash_sensible -> git clone https://github.com/mrzool/bash-sensible.git
@@ -23,10 +34,6 @@ Requirements for bash_dev
 $HOME/pan_tools/common.h
 
 
-Requirements for tmux_ohmytmux.conf.local
-----------------------------------------------------------------------
-ln -s ~/dotfiles/tmux_ohmytmux.conf.local .tmux.conf.local
-
 VM setup
 ----------------------------------------------------------------------
 ln -s ~/dotfiles/bash_profile .bash_profile
@@ -39,3 +46,6 @@ ln -s ~/dotfiles/tmux_vm.conf .tmux.conf
 1. gtags in $PATH
    Ideally installed in ~/Tools
 2. fzf installed at $HOME/Tools/fzf
+   run ~/Tools/fzf/install
+3. Itemr2:
+   Profiles > Text > Use built-in Powerline glyphs

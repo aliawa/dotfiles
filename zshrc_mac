@@ -57,7 +57,7 @@ pyenv() {
 # "builtin" page. If this the case uncomment the line below
 # unalias run-help
 autoload run-help
-HELPDIR=/usr/share/zsh/5.8.1/help
+HELPDIR=/usr/share/zsh/5.9/help   # version number needs updating from time to time
 alias help=run-help
 
 
@@ -160,7 +160,7 @@ export EDITOR=ewrap
 
 
 # ------------------------------------------------
-# source
+# pan scripts
 # ------------------------------------------------
 if [ -f $HOME/pan/pan_bin/common.sh ]; then
     source $HOME/pan/pan_bin/common.sh
