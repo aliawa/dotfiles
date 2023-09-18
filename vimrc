@@ -365,7 +365,7 @@ packadd! matchit
 " Lightline
 " ------------------------------------------------
 " Requires: tagbar, set laststatus=2, powerline fonts provided by iterm2
-"if exists("g:plugs") && has_key(plugs, 'lightline')
+if exists("g:plugs") && has_key(plugs, 'lightline.vim')
     set laststatus=2
     let g:lightline = {
           \ 'colorscheme': 'wombat',
@@ -380,7 +380,7 @@ packadd! matchit
           \ 'separator': { 'left': '', 'right': '' },
           \ 'subseparator': { 'left': '', 'right': '' }
           \ }
-"endif
+endif
 
 
 " ------------------------------------------------
