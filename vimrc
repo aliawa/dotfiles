@@ -1,12 +1,26 @@
-" vim: set fdm=marker:
-
-" Bypass vimrc or load alternate vimrc
-" vim -u NONE
-" vim -u ~/vimrc-alternate
-
-" Check/Debug settings
-" set modeline?
-" verbose set modeline? modelines?
+" --------------------------------------------------
+" Table of Contents
+" --------------------------------------------------
+"  1  vim-plug
+"  2  UI-Behavior
+"  3  Editor Behavior
+"  4  indentation
+"  5  search
+"  6  Clipboard
+"  7  Mouse support
+"  8  My Mappings
+"       - Key Mappings
+"       - Leader Mappings
+"  9  Abbreviations
+" 10  Filetype specific
+" 11  Cscope
+" 12  PAN commands
+" 13  My commands
+" 14  Optional packages
+" 15  Lightline
+" 16  Tagbar
+" 17  NETRW
+" 18  Gtags
 
 
 " --------------------------------------------------
@@ -53,7 +67,6 @@ set guioptions+=b               " show bottom scroll bar
 try
     set background=dark
     let g:solarized_termcolors=256
-    let g:solarized_visibility = "high"
     let g:solarized_contrast = "high"
     colorscheme solarized
 catch 
@@ -140,9 +153,13 @@ set clipboard+=unnamed          " share clipboard with windows clipboard
 " ------------------------------------------------
 " My Mappings
 " ------------------------------------------------
-let mapleader=","
-let maplocalleader="\\"
 
+" use C-z for auto completion in macros 
+set wildcharm=<C-z>
+
+"* 
+"*  --- Key Mappings ---
+"*
 inoremap jk <ESC>
 
 " window navigation
@@ -152,19 +169,11 @@ nmap <silent> <C-k> :wincmd k<CR>
 nmap <silent> <C-l> :wincmd l<CR>
 nmap <silent> <C-p> :FZF<CR>
 
-" Leader 
-set wildcharm=<C-z>
-nnoremap <leader>b :buffer<Space><C-z>|                             " invoke :buffers and list the available buffers
-nnoremap <Leader>h :cs f f %:t:r.h<CR>|                             " cscope Go to .h file
-nnoremap <Leader>c :cs f f %:t:r.c<CR>|                             " cscope Go to .c file  
-nnoremap <Leader>f :cs f f |                                        " cscope find file
-nnoremap <Leader>g :cs f g |                                        " cscope find symbol
-nnoremap <Leader>n :set nonumber<CR> :set norelativenumber<CR>|     " disable all numbering
-nnoremap <Leader>t :TagbarToggle<CR>|                               " Tagbar
+" Go from Normal mode to Paset+Insert mode
+"map <F3> :set paste!<CR>:startinsert<CR>|                           
 
-
-map <F3> :set paste!<CR>:startinsert<CR>|                           " Normal mode -> Paset+Insert mode
-set pastetoggle=<F3>                                                " F3 toggles in and out of paste mode
+" F3 toggles in and out of paste mode
+set pastetoggle=<F3>     
 
 nmap <F4> :cn<CR>
 
@@ -182,19 +191,36 @@ vnoremap <silent> # :<C-U>
   \escape(@", '?\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
   \gV:call setreg('"', old_reg, old_regtype)<CR>
 
-
 " move line up/down
 noremap - ddp
 noremap _ ddkP
 
+" select pasted text
+nnoremap <expr> gp '`[' . strpart(getregtype(), 0, 1) . '`]'
+
+
+"* 
+"*  --- Leader Mappings ---
+"*
+let mapleader=","
+let maplocalleader="\\"
+
+nnoremap <leader>b :buffer<Space><C-z>|                             " invoke :buffers and list the available buffers
+nnoremap <Leader>h :cs f f %:t:r.h<CR>|                             " cscope Go to .h file
+nnoremap <Leader>c :cs f f %:t:r.c<CR>|                             " cscope Go to .c file  
+nnoremap <Leader>f :cs f f |                                        " cscope find file
+nnoremap <Leader>g :cs f g |                                        " cscope find symbol
+nnoremap <Leader>n :set nonumber<CR> :set norelativenumber<CR>|     " disable all numbering
+nnoremap <Leader>t :TagbarToggle<CR>|                               " Tagbar
+
 " uppercase
-inoremap <c-u> <esc>viwUi
-nnoremap <c-u> viwU<esc>
+inoremap <leader>u <esc>viwUi
+nnoremap <leader>u viwU<esc>
 
 " wrap text
 " must press enter after <leader>" because of confusion with <leader>""
 nnoremap <leader>" viw<esc>a"<esc>bi"<esc>lel  
-noremap <leader>"" <esc>a"<esc>`<i"<esc>lel
+nnoremap <leader>"" <esc>a"<esc>`<i"<esc>lel
 nnoremap <leader>' viw<esc>a'<esc>bi'<esc>lel
 
 " vimrc editing
@@ -353,13 +379,13 @@ endif
 
 
 
-
 " ------------------------------------------------
 " Optional packages
 " ------------------------------------------------
 " machit.vim is found under '/usr/local/Cellar/macvim/9.0.0065/MacVim.app/Contents/Resources/vim/runtime/macros'
 " check with :set runtimepath
 packadd! matchit
+
 
 " ------------------------------------------------
 " Lightline
