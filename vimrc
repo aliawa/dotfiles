@@ -2,25 +2,26 @@
 " Table of Contents
 " --------------------------------------------------
 "  1  vim-plug
-"  2  UI-Behavior
-"  3  Editor Behavior
-"  4  indentation
-"  5  search
-"  6  Clipboard
-"  7  Mouse support
-"  8  My Mappings
+"  2  Plugins to try later
+"  3  UI-Behavior
+"  4  Editor Behavior
+"  5  indentation
+"  6  search
+"  7  Clipboard
+"  8  Mouse support
+"  9  My Mappings
 "       - Key Mappings
 "       - Leader Mappings
-"  9  Abbreviations
-" 10  Filetype specific
-" 11  Cscope
-" 12  PAN commands
-" 13  My commands
-" 14  Optional packages
-" 15  Lightline
-" 16  Tagbar
-" 17  NETRW
-" 18  Gtags
+" 10  Abbreviations
+" 11  Filetype specific
+" 12  Cscope
+" 13  PAN commands
+" 14  My commands
+" 15  Optional packages
+" 16  Lightline
+" 17  Tagbar
+" 18  NETRW
+" 19  Gtags
 
 
 " --------------------------------------------------
@@ -32,20 +33,27 @@ if ! empty(globpath(&rtp, 'autoload/plug.vim'))
         Plug 'preservim/tagbar'
         Plug 'vim-scripts/DrawIt'
         Plug '~/Tools/fzf'
+        Plug 'junegunn/fzf.vim'
         Plug 'altercation/vim-colors-solarized'
         Plug 'godlygeek/tabular'
         Plug 'andymass/vim-matchup'
         Plug 'vim-scripts/gtags.vim'
         Plug 'tpope/vim-fugitive'
         Plug 'chrisbra/csv.vim'
-        Plug 'jceb/vim-orgmode'
-        Plug 'inkarkat/vim-SyntaxRange'
         Plug 'tpope/vim-speeddating'
         Plug 'ConradIrwin/vim-bracketed-paste'
         Plug 'will133/vim-dirdiff'
+        Plug 'tpope/vim-commentary'
     call plug#end()
 else
 endif
+
+
+" --------------------------------------------------
+" Plugins to try later
+" --------------------------------------------------
+" Plug 'jceb/vim-orgmode'
+" Plug 'inkarkat/vim-SyntaxRange'     ranges in file with different syntax
 
 
 " --------------------------------------------------
@@ -158,7 +166,7 @@ set clipboard+=unnamed          " share clipboard with windows clipboard
 set wildcharm=<C-z>
 
 "* 
-"*  --- Key Mappings ---
+"*  ---- Key Mappings ----
 "*
 inoremap jk <ESC>
 
@@ -200,13 +208,13 @@ nnoremap <expr> gp '`[' . strpart(getregtype(), 0, 1) . '`]'
 
 
 "* 
-"*  --- Leader Mappings ---
+"*  ---- Leader Mappings ----
 "*
 let mapleader=","
 let maplocalleader="\\"
 
-nnoremap <leader>b :buffer<Space><C-z>|                             " invoke :buffers and list the available buffers
-nnoremap <Leader>h :cs f f %:t:r.h<CR>|                             " cscope Go to .h file
+nnoremap <silent><leader>l :Buffers<CR>
+nnoremap <Leader>h :cs f f %:t:r.h<CR>
 nnoremap <Leader>c :cs f f %:t:r.c<CR>|                             " cscope Go to .c file  
 nnoremap <Leader>f :cs f f |                                        " cscope find file
 nnoremap <Leader>g :cs f g |                                        " cscope find symbol
@@ -328,8 +336,8 @@ function! Appinfofix()
     endwhile
 endfunction
 
-" map ha 'hex address' convert lines of the form 'addr-451ab906-95e2' to 'addr-69.26.185.6-38370'
-nnoremap <leader>ha :s/addr-\(..\)\(..\)\(..\)\(..\)-\([a-f0-9]\{3,4\}\)/\=printf("addr-%d.%d.%d.%d-%d",str2nr(submatch(1),16), str2nr(submatch(2),16),str2nr(submatch(3),16),str2nr(submatch (4),16),str2nr(submatch(5),16))/ <CR><CR>
+" custom vim command to convert lines of the form 'addr-451ab906-95e2' to 'addr-69.26.185.6-38370'
+command HexAdr2Dec %s/addr-\(..\)\(..\)\(..\)\(..\)-\([a-f0-9]\{3,4\}\)/\=printf("addr-%d.%d.%d.%d-%d",str2nr(submatch(1),16), str2nr(submatch(2),16),str2nr(submatch(3),16),str2nr(submatch (4),16),str2nr(submatch(5),16))/
 
 
 " Adds offsets to SIP:Received output in packetdiag log.
@@ -350,8 +358,7 @@ endfunction
 "
 " Replace conflicting flow in the line 'Duplicate flows detected ...'
 " with session-id(0/1), where 0 means c2s and 1 s2c
-"
-nnoremap <leader>df :%s#\(Duplicate flows detected while inserting \d\+, flow\) \(\d\+\) \(.*$\)#\=printf("%s %d(%d) %s", submatch(1),submatch(2)/2,submatch(2)%2,submatch(3))#
+command DupFlow2Sess %s#\(Duplicate flows detected while inserting \d\+, flow\) \(\d\+\) \(.*$\)#\=printf("%s %d(%d) %s", submatch(1),submatch(2)/2,submatch(2)%2,submatch(3))#
 
 " ------------------------------------------------
 " My commands
@@ -434,4 +441,4 @@ if exists("g:plugs") && has_key(plugs, 'gtags.vim')
 endif
 
 
-
+setlocal commentstring=//\ %s
