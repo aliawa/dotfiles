@@ -273,9 +273,9 @@ augroup fileType
     autocmd FileType vim              noremap <buffer> <localleader>c :normal! I"<CR> 
     autocmd Filetype sh               let b:is_bash=1
     autocmd Filetype yaml             set shiftwidth=2
+    autocmd FileType apache           setlocal commentstring=#\ %s
 augroup END
 
-autocmd FileType apache setlocal commentstring=#\ %s
 
 " ------------------------------------------------
 " Cscope
