@@ -49,3 +49,6 @@ ln -s ~/dotfiles/tmux_vm.conf .tmux.conf
    run ~/Tools/fzf/install
 3. Itemr2:
    Profiles > Text > Use built-in Powerline glyphs
+4. Universal-ctags required for Tagbar
+   brew install universal-ctags
+

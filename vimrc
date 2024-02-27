@@ -268,11 +268,12 @@ augroup fileType
     autocmd!
     autocmd FileType c,cpp,java,scala noremap <buffer> <localleader>c :normal! I//<CR>
     autocmd FileType sh,ruby,python   noremap <buffer> <localleader>c :normal! I#<CR>
+    autocmd FileType python           setlocal commentstring=#\ %s
     autocmd FileType vim              noremap <buffer> <localleader>c :normal! I"<CR> 
     autocmd Filetype sh               let b:is_bash=1
 augroup END
 
-
+autocmd FileType apache setlocal commentstring=#\ %s
 
 " ------------------------------------------------
 " Cscope
@@ -398,17 +399,26 @@ packadd! matchit
 " Lightline
 " ------------------------------------------------
 " Requires: tagbar, set laststatus=2, powerline fonts provided by iterm2
+function! LightlineCurrentTag()
+    try 
+        return tagbar#currenttag("%s", "", "f")
+    catch
+        return ""
+    endtry
+endfunction
+
+
 if exists("g:plugs") && has_key(plugs, 'lightline.vim')
     set laststatus=2
     let g:lightline = {
           \ 'colorscheme': 'wombat',
           \ 'active': {
           \   'left': [ [ 'mode', 'paste' ],
-          \             [ 'readonly', 'filename', 'modified', 'tagbar' ] ],
+          \             [ 'readonly', 'filename', 'modified', 'current_tag' ] ],
           \   'right': [ [ 'lineinfo' ], [ 'percent' ], ['byteofset'], ['charvalhex']  ] 
           \ },
-          \ 'component': {
-          \     'tagbar': '%{tagbar#currenttag("%s", "", "f")}', 'charvalhex': '0x%B', 'byteofset':'%o'
+          \ 'component_function': {
+          \    'current_tag': 'LightlineCurrentTag'
           \ },
           \ 'separator': { 'left': '', 'right': '' },
           \ 'subseparator': { 'left': '', 'right': '' }
@@ -441,4 +451,18 @@ if exists("g:plugs") && has_key(plugs, 'gtags.vim')
 endif
 
 
-setlocal commentstring=//\ %s
+let g:tagbar_type_myhelp = {
+	\ 'ctagstype' : 'myhelp',
+	\ 'kinds' : [
+		\ 's:section'
+	\ ],
+	\ 'sort' : 0
+\ }
+
+let g:tagbar_type_text = {
+	\ 'ctagstype' : 'text',
+	\ 'kinds' : [
+		\ 's:section'
+	\ ],
+	\ 'sort' : 0
+\ }

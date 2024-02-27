@@ -46,7 +46,7 @@ function ssht() {
 }
 
 pyenv() {
-    source $HOME/workspace/scapy/py_venv/bin/activate
+    source $HOME/workspace/packetcraft/scapy_venv/bin/activate
 }
 
 
@@ -55,7 +55,7 @@ pyenv() {
 # ------------------------------------------------
 # on macOS run-help may be aliased to man, and man read will just display the 
 # "builtin" page. If this the case uncomment the line below
-# unalias run-help
+unalias run-help
 autoload run-help
 HELPDIR=/usr/share/zsh/5.9/help   # version number needs updating from time to time
 alias help=run-help
