@@ -35,11 +35,7 @@ alias ll='ls -l --color=auto'
 alias ldir='ls --color=auto -dl */'
 alias l.='ls -lad --group-directories-first .[^.]*'
 alias latest='ls -l -F -t | head'
-if [[ -e /usr/bin/vimx ]]; then 
-    alias vi='vimx'
-else 
-    alias vi='vim'
-fi
+alias vi='vim'
 alias minicom='sudo minicom -m -c on'
 alias grep='grep --color=auto'
 alias info='info --vi-keys'
