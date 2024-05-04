@@ -411,6 +411,10 @@ function! LightlineCurrentTag()
     endtry
 endfunction
 
+" zero based byteoffset, first byte index is zero
+function! Byteofset_z()
+    return line2byte(line( "." )) + col(".") - 2
+endfunction
 
 if exists("g:plugs") && has_key(plugs, 'lightline.vim')
     set laststatus=2
@@ -422,7 +426,11 @@ if exists("g:plugs") && has_key(plugs, 'lightline.vim')
           \   'right': [ [ 'lineinfo' ], [ 'percent' ], ['byteofset'], ['charvalhex']  ] 
           \ },
           \ 'component_function': {
-          \    'current_tag': 'LightlineCurrentTag'
+          \    'current_tag': 'LightlineCurrentTag',
+          \    'byteofset': 'Byteofset_z'
+          \ },
+          \ 'component': {
+          \    'charvalhex': '0x%B',
           \ },
           \ 'separator': { 'left': '', 'right': '' },
           \ 'subseparator': { 'left': '', 'right': '' }

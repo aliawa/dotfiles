@@ -45,10 +45,12 @@ ln -s ~/dotfiles/tmux_vm.conf .tmux.conf
 ----------------------------------------------------------------------
 1. gtags in $PATH
    Ideally installed in ~/Tools
-2. fzf installed at $HOME/Tools/fzf
+2. fzf installed at ~/Tools/fzf
    run ~/Tools/fzf/install
 3. Itemr2:
    Profiles > Text > Use built-in Powerline glyphs
-4. Universal-ctags required for Tagbar
+4. Universal-Ctags required for Tagbar, Note: Exuberant Ctags is the ancestor of Universal Ctags
    brew install universal-ctags
+   apt install universal-ctags
+
 

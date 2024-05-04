@@ -2,6 +2,7 @@ typeset -U path         # make path accept only unique values
 path+=$HOME/bin
 path+=$HOME/pan/pan_bin
 path+=$HOME/pan/pan_scripts
+path+=$HOME/pan/pan_info
 
 
 # Preferred editor for local and remote sessions
