@@ -175,7 +175,7 @@ nmap <silent> <C-h> :wincmd h<CR>
 nmap <silent> <C-j> :wincmd j<CR>
 nmap <silent> <C-k> :wincmd k<CR>
 nmap <silent> <C-l> :wincmd l<CR>
-nmap <silent> <C-p> :FZF<CR>
+nmap <silent> <C-p> :GFiles<CR>
 
 " Go from Normal mode to Paset+Insert mode
 "map <F3> :set paste!<CR>:startinsert<CR>|                           
