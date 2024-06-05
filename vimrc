@@ -395,6 +395,9 @@ endif
 " check with :set runtimepath
 packadd! matchit
 
+" debugging with gdb
+packadd! termdebug
+
 
 " ------------------------------------------------
 " Lightline
