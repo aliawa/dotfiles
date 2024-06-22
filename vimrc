@@ -416,6 +416,11 @@ function! Byteofset_z()
     return line2byte(line( "." )) + col(".") - 2
 endfunction
 
+function! ByteHexOfset_z()
+    return printf("0x%x", Byteofset_z())
+endfunction
+
+
 if exists("g:plugs") && has_key(plugs, 'lightline.vim')
     set laststatus=2
     let g:lightline = {
@@ -423,11 +428,12 @@ if exists("g:plugs") && has_key(plugs, 'lightline.vim')
           \ 'active': {
           \   'left': [ [ 'mode', 'paste' ],
           \             [ 'readonly', 'filename', 'modified', 'current_tag' ] ],
-          \   'right': [ [ 'lineinfo' ], [ 'percent' ], ['byteofset'], ['charvalhex']  ] 
+          \   'right': [ [ 'lineinfo' ], [ 'percent' ], ['byteofset','byteHexofset', 'charvalhex']  ] 
           \ },
           \ 'component_function': {
           \    'current_tag': 'LightlineCurrentTag',
-          \    'byteofset': 'Byteofset_z'
+          \    'byteofset': 'Byteofset_z',
+          \    'byteHexofset': 'ByteHexOfset_z'
           \ },
           \ 'component': {
           \    'charvalhex': '0x%B',
