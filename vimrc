@@ -413,13 +413,9 @@ endfunction
 
 " zero based byteoffset, first byte index is zero
 function! Byteofset_z()
-    return line2byte(line( "." )) + col(".") - 2
+    let pos = line2byte(line( "." )) + col(".") - 2
+    return pos >= 0? pos . '(' . printf("0x%x", pos) . ')': "0(0x0)"
 endfunction
-
-function! ByteHexOfset_z()
-    return printf("0x%x", Byteofset_z())
-endfunction
-
 
 if exists("g:plugs") && has_key(plugs, 'lightline.vim')
     set laststatus=2
@@ -428,7 +424,7 @@ if exists("g:plugs") && has_key(plugs, 'lightline.vim')
           \ 'active': {
           \   'left': [ [ 'mode', 'paste' ],
           \             [ 'readonly', 'filename', 'modified', 'current_tag' ] ],
-          \   'right': [ [ 'lineinfo' ], [ 'percent' ], ['byteofset','byteHexofset', 'charvalhex']  ] 
+          \   'right': [ [ 'lineinfo' ], [ 'percent' ], ['byteofset', 'charvalhex']  ] 
           \ },
           \ 'component_function': {
           \    'current_tag': 'LightlineCurrentTag',
@@ -436,7 +432,7 @@ if exists("g:plugs") && has_key(plugs, 'lightline.vim')
           \    'byteHexofset': 'ByteHexOfset_z'
           \ },
           \ 'component': {
-          \    'charvalhex': '0x%B',
+          \    'charvalhex': '0x%02B',
           \ },
           \ 'separator': { 'left': '', 'right': '' },
           \ 'subseparator': { 'left': '', 'right': '' }
