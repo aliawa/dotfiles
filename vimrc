@@ -1,31 +1,32 @@
 " --------------------------------------------------
 " Table of Contents
 " --------------------------------------------------
-"  1  vim-plug
+"  1  vim_plug
 "  2  Plugins to try later
-"  3  UI-Behavior
+"  3  UI_Behavior
 "  4  Editor Behavior
 "  5  indentation
 "  6  search
 "  7  Clipboard
-"  8  Mouse support
-"  9  My Mappings
+"  8  Mouse_support
+"  9  My_Mappings
 "       - Key Mappings
 "       - Leader Mappings
 " 10  Abbreviations
-" 11  Filetype specific
+" 11  Filetype_specific
 " 12  Cscope
-" 13  PAN commands
-" 14  My commands
-" 15  Optional packages
+" 13  PAN_commands
+" 14  My_commands
+" 15  Optional_packages
 " 16  Lightline
 " 17  Tagbar
 " 18  NETRW
 " 19  Gtags
+" 20  Vim_Matchup
 
 
 " --------------------------------------------------
-" vim-plug
+" vim_plug
 " --------------------------------------------------
 if ! empty(globpath(&rtp, 'autoload/plug.vim'))
     call plug#begin('~/.vim/plugged')
@@ -57,7 +58,7 @@ endif
 
 
 " --------------------------------------------------
-" UI Behavior
+" UI_Behavior
 " --------------------------------------------------
 set nocompatible                " No original vi's bugs and limitations.
 set nobackup		            " do not keep a backup file ending with "~" character
@@ -151,7 +152,7 @@ set clipboard+=unnamed          " share clipboard with windows clipboard
 
 
 " ------------------------------------------------
-" Mouse support
+" Mouse_support
 " ------------------------------------------------
 " set ttymouse=xterm2
 " set mouse=n
@@ -159,7 +160,7 @@ set clipboard+=unnamed          " share clipboard with windows clipboard
 
 
 " ------------------------------------------------
-" My Mappings
+" My_Mappings
 " ------------------------------------------------
 
 " use C-z for auto completion in macros 
@@ -255,7 +256,7 @@ iabbrev adn  and
 
 
 " ------------------------------------------------
-" Filetype specific
+" Filetype_specific
 " ------------------------------------------------
 
 " .sml is not Standard ML
@@ -320,7 +321,7 @@ augroup END
 
 
 " ------------------------------------------------
-" PAN commands
+" PAN_commands
 " ------------------------------------------------
 
 function! Appinfofix()
@@ -363,7 +364,7 @@ endfunction
 command DupFlow2Sess %s#\(Duplicate flows detected while inserting \d\+, flow\) \(\d\+\) \(.*$\)#\=printf("%s %d(%d) %s", submatch(1),submatch(2)/2,submatch(2)%2,submatch(3))#
 
 " ------------------------------------------------
-" My commands
+" My_commands
 " ------------------------------------------------
 
 function! Scratch()
@@ -389,11 +390,12 @@ endif
 
 
 " ------------------------------------------------
-" Optional packages
+" Optional_packages
 " ------------------------------------------------
+" check loaded plugins with :set runtimepath
 " machit.vim is found under '/usr/local/Cellar/macvim/9.0.0065/MacVim.app/Contents/Resources/vim/runtime/macros'
-" check with :set runtimepath
-packadd! matchit
+" Note: matchit is not needed when 'vim-matchup' plugin is installed.
+" packadd! matchit
 
 " debugging with gdb
 packadd! termdebug
@@ -480,3 +482,12 @@ let g:tagbar_type_text = {
 	\ ],
 	\ 'sort' : 0
 \ }
+
+
+" ------------------------------------------------
+" Vim_Matchup
+" ------------------------------------------------
+if exists("g:plugs") && has_key(plugs, 'vim-matchup')
+    " don't show off-screen match in status line
+    let g:matchup_matchparen_offscreen = {}
+endif
