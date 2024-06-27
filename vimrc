@@ -10,8 +10,8 @@
 "  7  Clipboard
 "  8  Mouse_support
 "  9  My_Mappings
-"       - Key Mappings
-"       - Leader Mappings
+"       - Key_Mappings
+"       - Leader_Mappings
 " 10  Abbreviations
 " 11  Filetype_specific
 " 12  Cscope
@@ -167,7 +167,7 @@ set clipboard+=unnamed          " share clipboard with windows clipboard
 set wildcharm=<C-z>
 
 "* 
-"*  ---- Key Mappings ----
+"*  ---- Key_Mappings ----
 "*
 inoremap jk <ESC>
 
@@ -178,13 +178,9 @@ nmap <silent> <C-k> :wincmd k<CR>
 nmap <silent> <C-l> :wincmd l<CR>
 nmap <silent> <C-p> :GFiles<CR>
 
-" Go from Normal mode to Paset+Insert mode
-"map <F3> :set paste!<CR>:startinsert<CR>|                           
-
-" F3 toggles in and out of paste mode
-set pastetoggle=<F3>     
 
 nmap <F4> :cn<CR>
+nmap <F8> :Buffers<CR>
 
 "Search for selected text, forwards 
 vnoremap <silent> * :<C-U>
@@ -209,7 +205,7 @@ nnoremap <expr> gp '`[' . strpart(getregtype(), 0, 1) . '`]'
 
 
 "* 
-"*  ---- Leader Mappings ----
+"*  ---- Leader_Mappings ----
 "*
 let mapleader=","
 let maplocalleader="\\"
@@ -490,4 +486,8 @@ let g:tagbar_type_text = {
 if exists("g:plugs") && has_key(plugs, 'vim-matchup')
     " don't show off-screen match in status line
     let g:matchup_matchparen_offscreen = {}
+   
+    " always highlight surrounding parenthesis
+    let g:matchup_matchparen_deferred = 1
+    let g:matchup_matchparen_hi_surround_always = 1
 endif
