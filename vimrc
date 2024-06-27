@@ -217,6 +217,7 @@ nnoremap <Leader>f :cs f f |                                        " cscope fin
 nnoremap <Leader>g :cs f g |                                        " cscope find symbol
 nnoremap <Leader>n :set nonumber<CR> :set norelativenumber<CR>|     " disable all numbering
 nnoremap <Leader>t :TagbarToggle<CR>|                               " Tagbar
+nnoremap <Leader>p :ProjectFiles<CR>
 
 " uppercase
 inoremap <leader>u <esc>viwUi
@@ -254,6 +255,9 @@ iabbrev adn  and
 " ------------------------------------------------
 " Filetype_specific
 " ------------------------------------------------
+""" C      -> .vim/after/ftplugin/c.vim
+""" python -> .vim/after/ftplugin/python.vim
+""" etc.
 
 " .sml is not Standard ML
 augroup sml_ft
@@ -265,13 +269,12 @@ augroup fileType
     autocmd!
     autocmd FileType c,cpp,java,scala noremap <buffer> <localleader>c :normal! I//<CR>
     autocmd FileType sh,ruby,python   noremap <buffer> <localleader>c :normal! I#<CR>
-    autocmd FileType python           setlocal commentstring=#\ %s
     autocmd FileType vim              noremap <buffer> <localleader>c :normal! I"<CR> 
     autocmd Filetype sh               let b:is_bash=1
     autocmd Filetype yaml             set shiftwidth=2
 augroup END
 
-autocmd FileType apache setlocal commentstring=#\ %s
+
 
 " ------------------------------------------------
 " Cscope
@@ -388,10 +391,8 @@ endif
 " ------------------------------------------------
 " Optional_packages
 " ------------------------------------------------
-" check loaded plugins with :set runtimepath
-" machit.vim is found under '/usr/local/Cellar/macvim/9.0.0065/MacVim.app/Contents/Resources/vim/runtime/macros'
-" Note: matchit is not needed when 'vim-matchup' plugin is installed.
-" packadd! matchit
+" Load optional plugins using "packadd!"
+" Check loaded plugins with ":set runtimepath"
 
 " debugging with gdb
 packadd! termdebug
@@ -491,3 +492,13 @@ if exists("g:plugs") && has_key(plugs, 'vim-matchup')
     let g:matchup_matchparen_deferred = 1
     let g:matchup_matchparen_hi_surround_always = 1
 endif
+
+
+" ------------------------------------------------
+" Commentary
+" ------------------------------------------------
+augroup Commentry_Setting
+    autocmd!
+    autocmd FileType python           setlocal commentstring=#\ %s
+    autocmd FileType apache           setlocal commentstring=#\ %s
+augroup END
