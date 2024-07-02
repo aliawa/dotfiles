@@ -2,7 +2,7 @@
 " Table of Contents
 " --------------------------------------------------
 "  1  vim_plug
-"  2  Plugins to try later
+
 "  3  UI_Behavior
 "  4  Editor Behavior
 "  5  indentation
@@ -33,7 +33,7 @@ if ! empty(globpath(&rtp, 'autoload/plug.vim'))
         Plug 'itchyny/lightline.vim'
         Plug 'preservim/tagbar'
         Plug 'vim-scripts/DrawIt'
-        Plug '~/Tools/fzf'
+        Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
         Plug 'junegunn/fzf.vim'
         Plug 'altercation/vim-colors-solarized'
         Plug 'godlygeek/tabular'
@@ -72,14 +72,6 @@ set ttimeoutlen=100             " timeout on key codes after 10th of a second.
 set guioptions-=T               " No GUI toolbar
 set guioptions+=b               " show bottom scroll bar
 
-" Load color scheme, do nothing if colorscheme not present
-try
-    set background=dark
-    let g:solarized_termcolors=256
-    let g:solarized_contrast = "high"
-    colorscheme solarized
-catch 
-endtry
 
 " Make the size of splits equal when window is resized
 augroup autoUI
@@ -120,6 +112,17 @@ augroup autoEdit
             \ endif                            " Jump to last known cursor position
 augroup END
 
+
+" Load color scheme, put is after 'syntax on' for highlight to take effect
+try
+    colorscheme solarized
+    set background=dark
+    let g:solarized_termcolors=256
+    let g:solarized_contrast = "high"
+catch 
+    colorscheme shine
+    highlight LineNr ctermbg=254
+endtry
                                           
                                                
 " --------------------------------------------------
@@ -502,3 +505,4 @@ augroup Commentry_Setting
     autocmd FileType python           setlocal commentstring=#\ %s
     autocmd FileType apache           setlocal commentstring=#\ %s
 augroup END
+
