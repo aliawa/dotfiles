@@ -81,7 +81,8 @@ setbranch() {
 
 
 dev() {
-    export PAN_BUILD_DIR=/home/aawais/pan_git/panos
+    [ -z "$1" ] && echo "Error missing directory" && return
+    export PAN_BUILD_DIR=/home/aawais/pan_git/$1
     export PANDIR=$HOME/pan_git
     cd $PAN_BUILD_DIR/src
     set_tname &
