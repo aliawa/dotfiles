@@ -80,6 +80,19 @@ setbranch() {
 }
 
 
+_dev()
+{
+  local cur words
+  cur=$2
+
+  cd /home/aawais/pan_git/panos
+  words=$(git worktree list --porcelain | awk '/worktree/ {print $2}' | xargs -n 1 basename)
+  COMPREPLY=( $(compgen -W "$words" -- $cur) )
+  return 0
+}
+
+complete -F _dev dev
+
 dev() {
     [ -z "$1" ] && echo "Error missing directory" && return
     export PAN_BUILD_DIR=/home/aawais/pan_git/$1
