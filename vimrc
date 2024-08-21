@@ -175,15 +175,19 @@ set wildcharm=<C-z>
 inoremap jk <ESC>
 
 " window navigation
-nmap <silent> <C-h> :wincmd h<CR>
-nmap <silent> <C-j> :wincmd j<CR>
-nmap <silent> <C-k> :wincmd k<CR>
-nmap <silent> <C-l> :wincmd l<CR>
-nmap <silent> <C-p> :GFiles<CR>
+nnoremap <silent> <C-h> :wincmd h<CR>
+nnoremap <silent> <C-j> :wincmd j<CR>
+nnoremap <silent> <C-k> :wincmd k<CR>
+nnoremap <silent> <C-l> :wincmd l<CR>
+nnoremap <silent> <C-p> :GFiles<CR>
 
+inoremap <silent> <C-h> :wincmd h<CR>
+inoremap <silent> <C-j> :wincmd j<CR>
+inoremap <silent> <C-k> :wincmd k<CR>
+inoremap <silent> <C-l> :wincmd l<CR>
 
-nmap <F4> :cn<CR>
-nmap <F8> :Buffers<CR>
+nnoremap <F4> :cn<CR>
+nnoremap <F8> :Buffers<CR>
 
 "Search for selected text, forwards 
 vnoremap <silent> * :<C-U>
