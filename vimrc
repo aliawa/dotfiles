@@ -151,7 +151,7 @@ set infercase                   " don't ignore case in completions
 " Clipboard
 " --------------------------------------------------
 set clipboard=unnamedplus      " share clipboard with X11 clipboard
-set clipboard+=unnamed          " share clipboard with windows clipboard
+set clipboard+=unnamed         " share clipboard with windows clipboard
 
 
 " ------------------------------------------------
@@ -243,7 +243,11 @@ nnoremap <leader>pb :execute "rightbelow vsplit " . bufname("#")<cr>
 nnoremap <leader>; :normal! mqA;<esc>`q <cr>
 
 " draw a 70 character long divider
-nnoremap <leader>br o<esc>70i-<esc>j0
+function! IsLastLine()                     "Name must start with uppercase
+    return line('.')==line($)
+endfunction
+
+nnoremap <expr> <leader>br line('.')==line('$') ? 'o<esc>70i-<esc>o':'o<esc>70i-<esc>j0'
 
 
 " ------------------------------------------------

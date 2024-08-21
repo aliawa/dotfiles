@@ -64,3 +64,8 @@ ln -s ~/dotfiles/tmux_vm.conf .tmux.conf
    brew install universal-ctags
    apt install universal-ctags
 
+
+
+oh-my-szh
+----------------------------------------------------------------------
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"

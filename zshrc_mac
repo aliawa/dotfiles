@@ -17,6 +17,14 @@ VISUAL=vim
 
 
 # ------------------------------------------------
+# ohmyzsh settings
+# ------------------------------------------------
+
+ZSH_THEME_RANDOM_IGNORED=( "kafeitu" "dpoggi" )
+
+
+
+# ------------------------------------------------
 # iterm2
 # ------------------------------------------------
 
@@ -72,9 +80,8 @@ alias ldir='ls -odFGh */'
 alias l.='ls -dG .*'
 alias latest='CLICOLOR_FORCE=yes ls -oFGht | head'
 alias grepc="grep --color=always"
-alias awk=gawk
 alias tclsh='rlwrap tclsh'
-alias bc="bc $HOME/.bc.rc"
+# alias bc="bc $HOME/.bc.rc"
 
 # no dups in history
 setopt HIST_IGNORE_ALL_DUPS
