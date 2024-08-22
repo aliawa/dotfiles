@@ -35,7 +35,7 @@ if ! empty(globpath(&rtp, 'autoload/plug.vim'))
         Plug 'vim-scripts/DrawIt'
         Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
         Plug 'junegunn/fzf.vim'
-        Plug 'altercation/vim-colors-solarized'
+        " Plug 'altercation/vim-colors-solarized'
         Plug 'godlygeek/tabular'
         Plug 'andymass/vim-matchup'
         Plug 'vim-scripts/gtags.vim'
@@ -45,6 +45,8 @@ if ! empty(globpath(&rtp, 'autoload/plug.vim'))
         Plug 'ConradIrwin/vim-bracketed-paste'
         Plug 'will133/vim-dirdiff'
         Plug 'tpope/vim-commentary'
+        Plug 'Konfekt/FastFold'
+        Plug 'KeqiZeng/NightElf'
     call plug#end()
 else
 endif
@@ -115,10 +117,11 @@ augroup END
 
 " Load color scheme, put is after 'syntax on' for highlight to take effect
 try
-    colorscheme solarized
-    set background=dark
-    let g:solarized_termcolors=256
-    let g:solarized_contrast = "high"
+    colorscheme nightelf
+    " colorscheme solarized
+    " set background=dark
+    " let g:solarized_termcolors=256
+    " let g:solarized_contrast = "high"
 catch 
     colorscheme shine
     highlight LineNr ctermbg=254
@@ -447,7 +450,7 @@ endfunction
 if exists("g:plugs") && has_key(plugs, 'lightline.vim')
     set laststatus=2
     let g:lightline = {
-          \ 'colorscheme': 'wombat',
+          \ 'colorscheme': 'OldHope',
           \ 'active': {
           \   'left': [ [ 'mode', 'paste' ],
           \             [ 'readonly', 'filename', 'modified', 'current_tag' ] ],
