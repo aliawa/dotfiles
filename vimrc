@@ -398,6 +398,9 @@ if !exists(":DiffOrig")
 endif
 
 
+" convert 1-4 digit hex numbers to decimal
+command Hex2Dec %s/\<0x\([0-9A-Fa-f]\{1,4\}\)\>/\=printf("0x%s(%d)", submatch(1), str2nr(submatch(1),16))
+
 
 " ------------------------------------------------
 " Optional_packages

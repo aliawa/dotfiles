@@ -317,3 +317,9 @@ set-option -g automatic-rename-format '#{b:pane_current_path}'
 # because I only have two splits usually
 bind j select-pane -D  # move down
 bind k select-pane -U  # move up
+
+# Add truecolor support
+set-option -ga terminal-overrides ",xterm-256color:Tc"
+# Default terminal is 256 colors
+set -g default-terminal "tmux-256color"
+
