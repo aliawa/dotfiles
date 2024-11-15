@@ -20,9 +20,9 @@ VISUAL=vim
 # ohmyzsh settings
 # ------------------------------------------------
 
-ZSH_THEME_RANDOM_IGNORED=( "kafeitu" "dpoggi" "alanpeabody" "xiong-chiamiov-plus" "jonathan" "nanotech" "imajes" "fino-time" "junkfood" )
+ZSH_THEME_RANDOM_IGNORED=( "kafeitu" "dpoggi" "alanpeabody" "xiong-chiamiov-plus" "jonathan" "nanotech" "imajes" "fino-time" "junkfood" "rixius" )
 ZSH_GOOD=( "sonicradish" "intheloop" "refined" )
-ZSH_GOOD_2=( "arrow" )
+ZSH_GOOD_2=( "arrow" "avit" )
 
 
 # ------------------------------------------------
