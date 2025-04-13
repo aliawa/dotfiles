@@ -246,6 +246,9 @@ nnoremap <leader>pb :execute "rightbelow vsplit " . bufname("#")<cr>
 " insert semicolon at the end of line
 nnoremap <leader>; :normal! mqA;<esc>`q <cr>
 
+" insert todays date
+nnoremap <leader>d :read !date -j +"%b %d, %G" <cr>
+
 " draw a 70 character long divider
 function! IsLastLine()                     "Name must start with uppercase
     return line('.')==line($)
@@ -371,7 +374,13 @@ endfunction
 "
 " Replace conflicting flow in the line 'Duplicate flows detected ...'
 " with session-id(0/1), where 0 means c2s and 1 s2c
-command DupFlow2Sess %s#\(Duplicate flows detected while inserting \d\+, flow\) \(\d\+\) \(.*$\)#\=printf("%s %d(%d) %s", submatch(1),submatch(2)/2,submatch(2)%2,submatch(3))#
+command DupFlow2Sess %s#\(Duplicate flows detected while inserting\) \(\d\+\)\(, flow\) \(\d\+\) \(.*$\)#
+        \\=printf("%s %d(%d)%s %d(%d) %s",
+        \submatch(1),
+        \submatch(2)/2,submatch(2)%2,
+        \submatch(3),
+        \submatch(4)/2,submatch(4)%2,
+        \submatch(5))#
 
 " ------------------------------------------------
 " My_commands
@@ -410,6 +419,11 @@ command Hex2Dec %s/\<0x\([0-9A-Fa-f]\{1,4\}\)\>/\=printf("0x%s(%d)", submatch(1)
 
 " debugging with gdb
 packadd! termdebug
+
+" Use the man.vim plugin and make shift-k use vim window
+runtime! ftplugin/man.vim
+set keywordprg=:Man
+
 
 
 " ------------------------------------------------

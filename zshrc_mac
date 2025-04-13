@@ -3,7 +3,7 @@ path+=$HOME/bin
 path+=$HOME/pan/pan_bin
 path+=$HOME/pan/pan_scripts
 path+=$HOME/pan/pan_info
-
+path+=$HOME/Library/Python/3.9/bin
 
 # Preferred editor for local and remote sessions
 #if [[ -n $SSH_CONNECTION ]]; then
@@ -20,9 +20,9 @@ VISUAL=vim
 # ohmyzsh settings
 # ------------------------------------------------
 
-ZSH_THEME_RANDOM_IGNORED=( "kafeitu" "dpoggi" "alanpeabody" "xiong-chiamiov-plus" "jonathan" "nanotech" "imajes" "fino-time" "junkfood" "rixius" )
-ZSH_GOOD=( "sonicradish" "intheloop" "refined" )
-ZSH_GOOD_2=( "arrow" "avit" )
+ZSH_THEME_RANDOM_IGNORED=( "kafeitu" "dpoggi" "alanpeabody" "xiong-chiamiov-plus" "jonathan" "nanotech" "imajes" "fino-time" "junkfood" "rixius" "gentoo" "simonoff" "dallas" "tjkirch_mod" "half-life" "humza" "essembeh")
+ZSH_GOOD=( "sonicradish" "intheloop" "refined" "nicoulaj")
+ZSH_GOOD_2=( "arrow" "avit" "fino-time")
 
 
 # ------------------------------------------------
