@@ -43,6 +43,16 @@ alias gb='git branch --show-current'
 alias gl="git log --format='%C(blue)%h %C(cyan)%as %<(7,trunc)%C(green)%al %C(auto)%d%gd %<|(-1,trunc)%s' -n 10"
 
 
+
+# ----------------------------------------------------------------------
+# Alias that require some installation
+# ----------------------------------------------------------------------
+
+# `apt intall bat` will install `batcat` command
+# alias cat='batcat'
+
+
+
 # ----------------------------------------------------------------------
 # exports
 # ----------------------------------------------------------------------
