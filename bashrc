@@ -39,6 +39,8 @@ alias vi='vim'
 alias minicom='sudo minicom -m -c on'
 alias grep='grep --color=auto'
 alias info='info --vi-keys'
+alias gb='git branch --show-current'
+alias gl="git log --format='%C(blue)%h %C(cyan)%as %<(7,trunc)%C(green)%al %C(auto)%d%gd %<|(-1,trunc)%s' -n 10"
 
 
 # ----------------------------------------------------------------------

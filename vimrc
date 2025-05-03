@@ -47,6 +47,8 @@ if ! empty(globpath(&rtp, 'autoload/plug.vim'))
         Plug 'tpope/vim-commentary'
         Plug 'Konfekt/FastFold'
         Plug 'KeqiZeng/NightElf'
+        Plug 'kshenoy/vim-signature'
+        Plug 'vim-utils/vim-man'
     call plug#end()
 else
 endif
@@ -127,7 +129,7 @@ catch
     highlight LineNr ctermbg=254
 endtry
                                           
-                                               
+       
 " --------------------------------------------------
 " indentation
 " --------------------------------------------------
@@ -210,6 +212,7 @@ vnoremap <silent> # :<C-U>
 noremap - ddp
 noremap _ ddkP
 
+
 " select pasted text
 nnoremap <expr> gp '`[' . strpart(getregtype(), 0, 1) . '`]'
 
@@ -221,13 +224,14 @@ let mapleader=","
 let maplocalleader="\\"
 
 nnoremap <silent><leader>l :Buffers<CR>
-nnoremap <Leader>h :cs f f %:t:r.h<CR>
-nnoremap <Leader>c :cs f f %:t:r.c<CR>|                             " cscope Go to .c file  
-nnoremap <Leader>f :cs f f |                                        " cscope find file
-nnoremap <Leader>g :cs f g |                                        " cscope find symbol
-nnoremap <Leader>n :set nonumber<CR> :set norelativenumber<CR>|     " disable all numbering
-nnoremap <Leader>t :TagbarToggle<CR>|                               " Tagbar
-nnoremap <Leader>p :ProjectFiles<CR>
+nnoremap <leader>h :cs f f %:t:r.h<CR>
+nnoremap <leader>c :cs f f %:t:r.c<CR>|                             " cscope Go to .c file  
+nnoremap <leader>f :cs f f |                                        " cscope find file
+nnoremap <leader>g :cs f g |                                        " cscope find symbol
+nnoremap <leader>n :set nonumber<CR> :set norelativenumber<CR>|     " disable all numbering
+nnoremap <leader>t :TagbarToggle<CR>|                               " Tagbar
+nnoremap <leader>p :ProjectFiles<CR>
+map      <leader>k <Plug>(Man)
 
 " uppercase
 inoremap <leader>u <esc>viwUi

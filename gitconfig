@@ -31,6 +31,7 @@
     ignore   = update-index --assume-unchanged
     unignore = update-index --no-assume-unchanged
     ignored  = !git ls-files -v | grep "^[[:lower:]]"
+	fl = log --graph --pretty=format:\"%C(green)%h %C(yellow)%<(16,trunc)%aN %C(red)%<(12,trunc)%ar %C(reset)%<(135,trunc)%s\"
 
 
 
