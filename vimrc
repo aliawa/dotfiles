@@ -428,7 +428,6 @@ command Hex2Dec %s/\<0x\([0-9A-Fa-f]\{1,4\}\)\>/\=printf("0x%s(%d)", submatch(1)
 packadd! termdebug
 
 " Use the man.vim plugin and make shift-k use vim window
-runtime! ftplugin/man.vim
 set keywordprg=:Man
 
 
