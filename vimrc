@@ -35,7 +35,7 @@ if ! empty(globpath(&rtp, 'autoload/plug.vim'))
         Plug 'vim-scripts/DrawIt'
         Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
         Plug 'junegunn/fzf.vim'
-        " Plug 'altercation/vim-colors-solarized'
+        Plug 'altercation/vim-colors-solarized'
         Plug 'godlygeek/tabular'
         Plug 'andymass/vim-matchup'
         Plug 'vim-scripts/gtags.vim'
@@ -46,7 +46,7 @@ if ! empty(globpath(&rtp, 'autoload/plug.vim'))
         Plug 'will133/vim-dirdiff'
         Plug 'tpope/vim-commentary'
         Plug 'Konfekt/FastFold'
-        Plug 'KeqiZeng/NightElf'
+        " Plug 'KeqiZeng/NightElf'
         Plug 'kshenoy/vim-signature'
         Plug 'vim-utils/vim-man'
     call plug#end()
@@ -119,11 +119,11 @@ augroup END
 
 " Load color scheme, put is after 'syntax on' for highlight to take effect
 try
-    colorscheme nightelf
-    " colorscheme solarized
-    " set background=dark
-    " let g:solarized_termcolors=256
-    " let g:solarized_contrast = "high"
+    " colorscheme nightelf
+    colorscheme solarized
+    set background=dark
+    let g:solarized_termcolors=256
+    let g:solarized_contrast = "high"
 catch 
     colorscheme default
     highlight LineNr ctermbg=0 ctermfg=6
