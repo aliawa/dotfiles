@@ -125,8 +125,8 @@ try
     " let g:solarized_termcolors=256
     " let g:solarized_contrast = "high"
 catch 
-    colorscheme shine
-    highlight LineNr ctermbg=254
+    colorscheme default
+    highlight LineNr ctermbg=0 ctermfg=6
 endtry
                                           
        
@@ -164,7 +164,7 @@ set clipboard+=unnamed         " share clipboard with windows clipboard
 " ------------------------------------------------
 " set ttymouse=xterm2
 " set mouse=n
-" set mouse=a                   " mouse does not select line numbers but create problem with 'y' copying to clipboard
+" set mouse=a                   " good: mouse does not select line numbers,  bad: create problem with 'y' copying to clipboard
 
 
 " ------------------------------------------------
@@ -216,6 +216,12 @@ noremap _ ddkP
 " select pasted text
 nnoremap <expr> gp '`[' . strpart(getregtype(), 0, 1) . '`]'
 
+" center search result
+nnoremap n nzz
+
+" I always want no-space between joined lines
+nnoremap J gJ
+
 
 "* 
 "*  ---- Leader_Mappings ----
@@ -240,7 +246,7 @@ nnoremap <leader>u viwU<esc>
 " wrap text
 " must press enter after <leader>" because of confusion with <leader>""
 nnoremap <leader>" viw<esc>a"<esc>bi"<esc>lel  
-nnoremap <leader>"" <esc>a"<esc>`<i"<esc>lel
+" nnoremap <leader>"" <esc>a"<esc>`<i"<esc>lel
 nnoremap <leader>' viw<esc>a'<esc>bi'<esc>lel
 
 " vimrc editing

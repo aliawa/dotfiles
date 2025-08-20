@@ -323,3 +323,6 @@ set-option -ga terminal-overrides ",xterm-256color:Tc"
 # Default terminal is 256 colors
 set -g default-terminal "tmux-256color"
 
+# Quick note
+bind-key m display-popup -w 60% -h 20% -x 50 -y 0 -E "vim $HOME/marks.txt"
+
