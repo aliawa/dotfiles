@@ -46,3 +46,5 @@
 [filter "sqlite3tosql"]
 	clean = sqlite3 %f .dump
 	smudge = sqlite3 %f
+[color "diff"]
+	meta = blue bold
