@@ -46,13 +46,12 @@ if ! empty(globpath(&rtp, 'autoload/plug.vim'))
         Plug 'will133/vim-dirdiff'
         Plug 'tpope/vim-commentary'
         Plug 'Konfekt/FastFold'
-        " Plug 'KeqiZeng/NightElf'
+        Plug 'KeqiZeng/NightElf'
         Plug 'kshenoy/vim-signature'
         Plug 'vim-utils/vim-man'
     call plug#end()
 else
 endif
-
 
 " --------------------------------------------------
 " Plugins to try later
@@ -119,11 +118,13 @@ augroup END
 
 " Load color scheme, put is after 'syntax on' for highlight to take effect
 try
-    " colorscheme nightelf
     colorscheme solarized
     set background=dark
     let g:solarized_termcolors=256
     let g:solarized_contrast = "high"
+    if &diff
+        colorscheme nightelf " color scheme for diff mode
+    endif
 catch 
     colorscheme default
     highlight LineNr ctermbg=0 ctermfg=6
@@ -185,6 +186,7 @@ nnoremap <silent> <C-j> :wincmd j<CR>
 nnoremap <silent> <C-k> :wincmd k<CR>
 nnoremap <silent> <C-l> :wincmd l<CR>
 nnoremap <silent> <C-p> :GFiles<CR>
+nnoremap <silent> <C-w>\ :vert winc ]<CR>
 
 inoremap <silent> <C-h> :wincmd h<CR>
 inoremap <silent> <C-j> :wincmd j<CR>
@@ -314,6 +316,8 @@ if has ("cscope")
 
     " use both cscope and ctag for 'ctrl-]', ':ta', and 'vim -t'
     set cscopetag
+    " search cscope first then fallback to ctags
+    set csto=0
 
     "hit 'CTRL-\', followed by one of the cscope search types above (s,g,c,t,e,f,i,d)
     nmap <C-\>s :cs find s <C-R>=expand("<cword>")<CR><CR>  
@@ -500,7 +504,9 @@ let g:netrw_winsize   = 30
 " ------------------------------------------------
 if exists("g:plugs") && has_key(plugs, 'gtags.vim')
     set csprg=gtags-cscope
-    cs add GTAGS
+    let $GTAGSROOT = $PAN_BUILD_DIR . "/src"
+    let $GTAGSDBPATH = $PAN_BUILD_DIR . "/src"
+    exe "cs add " . $PAN_BUILD_DIR . "/src/GTAGS"
 endif
 
 
@@ -542,4 +548,6 @@ augroup Commentry_Setting
     autocmd FileType python           setlocal commentstring=#\ %s
     autocmd FileType apache           setlocal commentstring=#\ %s
 augroup END
+
+
 
