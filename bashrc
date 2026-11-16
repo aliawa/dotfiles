@@ -125,3 +125,8 @@ fi
 [ -f ~/.bash_local ] && source ~/.bash_local
 
 
+# >>> halo-setup managed block >>>
+# Managed by halo-setup — delete this block (or run `halo-setup --uninstall`) to remove.
+alias halo-doctor='"${PANOS_REPO:-$(git rev-parse --show-toplevel)}/halo-setup" --check'
+alias halo-update='"${PANOS_REPO:-$(git rev-parse --show-toplevel)}/halo-setup" --update'
+# <<< halo-setup managed block <<<

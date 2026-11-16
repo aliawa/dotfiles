@@ -302,7 +302,7 @@ augroup fileType
     autocmd Filetype sh               let b:is_bash=1
     autocmd Filetype yaml             set shiftwidth=2
 augroup END
-
+filetype on
 
 
 " ------------------------------------------------
